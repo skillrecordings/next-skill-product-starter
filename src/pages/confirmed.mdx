@@ -1,0 +1,38 @@
+export const firstName = SEO.openGraph.profile.firstName
+export const lastName = SEO.openGraph.profile.lastName
+export const productTitle = SEO.title
+
+export const Message = () => (
+  <>
+    <p>
+      You'll receive emails from me ({firstName} {lastName}) about{' '}
+      {productTitle}.
+    </p>
+    <p>
+      Every email I send about {productTitle} will have a handy unsubscribe link
+      at the bottom. Please feel free to use it if you don't want to receive
+      emails about this!
+    </p>
+  </>
+)
+
+# Confirmed!
+
+<Message />
+
+<div className="italic">
+  Thanks,
+  <br />
+  {firstName}
+</div>
+
+import SEO from '../../next-seo.json'
+import Layout from 'layouts'
+
+export default ({children}) => (
+  <Layout>
+    <div className="prose dark:prose-dark prose-lg mx-auto py-24">
+      {children}
+    </div>
+  </Layout>
+)

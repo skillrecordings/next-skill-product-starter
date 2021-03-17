@@ -1,0 +1,34 @@
+{
+  "title": "My Product",
+  "titleTemplate": "%s | My Site",
+  "description": "Lorem ipsum dolor sit amet.",
+  "favicon": "/favicon.ico",
+  "email": "team@product.dev",
+  "additionalMetaTags": [
+    {"property": "author", "content": "Skill Recordings"},
+    {
+      "property": "keywords",
+      "content": ""
+    }
+  ],
+  "twitter": {
+    "cardType": "summary_large_image",
+    "handle": "skillrecordings",
+    "site": "skillrecordings"
+  },
+  "openGraph": {
+    "type": "website",
+    "site_name": "My Site",
+    "profile": {
+      "firstName": "First Name",
+      "lastName": "Last Name"
+    },
+    "images": [
+      {
+        "url": "/card@2x.png",
+        "width": 1280,
+        "height": 720
+      }
+    ]
+  }
+}
