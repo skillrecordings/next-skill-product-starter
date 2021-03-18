@@ -7,21 +7,23 @@ import ConvertkitSubscribeForm from 'components/forms/convertkit'
 function usePoliteConvertkitForm(
   threshold: 0.6 | 0.7 | 0.75 | 0.8 | 0.85 | 0.9, // 1 is 100% of page height
 ) {
-  const {scrollYProgress} = useViewportScroll()
-  const [peaking, setPeaking] = React.useState<boolean>(false)
-  const [opened, setOpened] = React.useState<boolean>(false)
-  const [closed, setClosed] = React.useState<boolean>(false)
-
   // TODO: get user preference from CK or Customer.io
   const [dismissed, setDismissed, _removeDismissedPreference] = useLocalStorage(
     'dismissed-polite-message',
     'false',
   )
 
+  const {scrollYProgress} = useViewportScroll()
+  const [peaking, setPeaking] = React.useState<boolean>(false)
+  const [opened, setOpened] = React.useState<boolean>(false)
+  const [closed, setClosed] = React.useState<boolean>(false)
+
   scrollYProgress.onChange((y) => {
-    const yRound = Number(y.toFixed(1))
-    if (yRound === threshold) {
-      setPeaking(opened ? false : closed ? false : true)
+    if (dismissed !== 'true') {
+      const yRound = Number(y.toFixed(1))
+      if (yRound === threshold) {
+        setPeaking(opened ? false : closed ? false : true)
+      }
     }
   })
 
