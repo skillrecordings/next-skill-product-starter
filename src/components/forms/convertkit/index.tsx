@@ -2,7 +2,14 @@ import * as React from 'react'
 
 const FORM_ID = '123456'
 
-const ConvertkitSubscribeForm: React.FC = ({children}) => {
+type ConvertkitSubscribeFormProps = {
+  onSubmit: () => void
+}
+
+const ConvertkitSubscribeForm: React.FC<ConvertkitSubscribeFormProps> = ({
+  children,
+  onSubmit,
+}) => {
   return (
     <div id="subscribe">
       {children}
@@ -10,6 +17,7 @@ const ConvertkitSubscribeForm: React.FC = ({children}) => {
         action={`https://app.convertkit.com/forms/${FORM_ID}/subscriptions`}
         method="post"
         className="space-y-4 w-full"
+        onSubmit={() => onSubmit()}
       >
         <div>
           <label

@@ -25,10 +25,10 @@ const ArticleTemplate: React.FC<ArticleTemplateProps> = ({meta, children}) => {
         <footer className="mx-auto max-w-screen-md border-t dark:border-gray-800 border-gray-200 py-16">
           {meta.contributors && `by ${meta.contributors[0].name}`}
         </footer>
-        <PoliteConvertkitForm peakingContent={'Hello!'}>
-          <p>Subscribe today!</p>
-        </PoliteConvertkitForm>
       </article>
+      <PoliteConvertkitForm peakingContent={'Hello!'}>
+        <p>Subscribe today!</p>
+      </PoliteConvertkitForm>
     </Layout>
   )
 }
