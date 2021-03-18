@@ -1,6 +1,6 @@
 import React, {FunctionComponent} from 'react'
 import {shuffle, isEmpty, get} from 'lodash'
-import MultipleChoiceQuestion from 'components/questions/multiple-choice-question'
+import MultipleChoiceQuestion from 'components/forms/multiple-choice-question'
 import {useRouter} from 'next/router'
 import axios from 'axios'
 import ReactMarkdown from 'react-markdown'

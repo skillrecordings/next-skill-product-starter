@@ -1,5 +1,6 @@
 import * as React from 'react'
 import Layout from 'layouts'
+import PoliteConvertkitForm from 'components/forms/convertkit/polite'
 
 type ArticleTemplateProps = {
   meta?: any
@@ -7,6 +8,7 @@ type ArticleTemplateProps = {
 
 const ArticleTemplate: React.FC<ArticleTemplateProps> = ({meta, children}) => {
   const {title} = meta
+
   return (
     <Layout meta={meta}>
       <article>
@@ -17,12 +19,15 @@ const ArticleTemplate: React.FC<ArticleTemplateProps> = ({meta, children}) => {
             </h1>
           )}
         </header>
-        <main className="prose dark:prose-dark sm:prose-xl prose-lg mx-auto py-32 max-w-screen-sm">
+        <main className="prose dark:prose-dark lg:prose-xl prose-lg mx-auto py-32 max-w-screen-md">
           {children}
         </main>
-        <footer className="mx-auto max-w-screen-sm border-t dark:border-gray-800 border-gray-200 py-16">
+        <footer className="mx-auto max-w-screen-md border-t dark:border-gray-800 border-gray-200 py-16">
           {meta.contributors && `by ${meta.contributors[0].name}`}
         </footer>
+        <PoliteConvertkitForm peakingContent={'Hello!'}>
+          <p>Subscribe today!</p>
+        </PoliteConvertkitForm>
       </article>
     </Layout>
   )

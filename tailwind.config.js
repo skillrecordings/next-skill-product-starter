@@ -17,6 +17,12 @@ module.exports = {
             a: {
               color: theme('colors.rose.600'),
             },
+            h1: {
+              paddingTop: '1.25em',
+            },
+            'h1:first-of-type': {
+              paddingTop: 0,
+            },
           },
         },
         dark: {
@@ -30,5 +36,9 @@ module.exports = {
       }),
     },
   },
-  plugins: [require('@tailwindcss/typography'), require('@tailwindcss/forms')],
+  plugins: [
+    require('@tailwindcss/typography'),
+    require('@tailwindcss/forms'),
+    require('@tailwindcss/aspect-ratio'),
+  ],
 }
