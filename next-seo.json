@@ -4,6 +4,7 @@
   "description": "Lorem ipsum dolor sit amet.",
   "favicon": "/favicon.ico",
   "email": "team@product.dev",
+  "siteUrl": "myproduct.dev",
   "additionalMetaTags": [
     {"property": "author", "content": "Skill Recordings"},
     {

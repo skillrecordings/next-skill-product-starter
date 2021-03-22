@@ -1,8 +1,13 @@
 const withPlugins = require('next-compose-plugins')
 const withMDX = require('@next/mdx')()
 
+const IMAGE_HOST_DOMAINS = [`res.cloudinary.com`]
+
 const nextConfig = {
   reactStrictMode: true,
+  images: {
+    domains: IMAGE_HOST_DOMAINS,
+  },
   async redirects() {
     return []
   },
@@ -10,6 +15,7 @@ const nextConfig = {
 
 module.exports = withPlugins(
   [
+    withImages(),
     withMDX({
       pageExtensions: ['ts', 'tsx', 'mdx'],
       remarkPlugins: [
