@@ -13,10 +13,10 @@ export const AUTH_DOMAIN = process.env.NEXT_PUBLIC_AUTH_DOMAIN
 const AUTH_CLIENT_ID = process.env.NEXT_PUBLIC_CLIENT_ID
 const AUTH_REDIRECT_URL = process.env.NEXT_PUBLIC_REDIRECT_URI
 
-export const USER_KEY = 'pr_user'
-export const ACCESS_TOKEN_KEY = 'pr_sellable_access_token'
-export const EXPIRES_AT_KEY = 'pr_sellable_expires_at'
-export const VIEWING_AS_USER_KEY = 'pr_sellable_viewing_as_user'
+export const USER_KEY = 'sr_user'
+export const ACCESS_TOKEN_KEY = 'sr_sellable_access_token'
+export const EXPIRES_AT_KEY = 'sr_sellable_expires_at'
+export const VIEWING_AS_USER_KEY = 'sr_sellable_viewing_as_user'
 
 type AuthorizationHeader = {
   Authorization: string
