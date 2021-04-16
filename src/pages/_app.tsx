@@ -6,6 +6,16 @@ import {ThemeProvider} from 'next-themes'
 import '../styles/globals.css'
 import 'focus-visible'
 
+declare global {
+  interface Window {
+    ahoy: any
+    _cio: any
+    fbq: any
+    becomeUser: any
+    ga: any
+  }
+}
+
 function MyApp({Component, pageProps}: AppProps) {
   return (
     <>
