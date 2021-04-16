@@ -13,9 +13,9 @@ type CommerceProps = {
 export function stylesByType(type: string) {
   // TODO replace with titles of bundles
   switch (type) {
-    case 'Pro':
+    case 'Pure React Pro':
       return 'md:col-span-4 w-full shadow-xl'
-    case 'Book':
+    case 'Pure React Book':
       return 'md:col-span-3 md:mt-48 shadow-xl md:opacity-80 hover:opacity-100 transition-opacity ease-in-out duration-150'
     case 'Basic':
       return 'col-start-1 col-end-2 row-start-1 md:opacity-60 opacity-100 hover:opacity-100 sm:mt-48 transition-opacity ease-in-out duration-150 shadow-md'
@@ -27,7 +27,7 @@ export function stylesByType(type: string) {
 export function descriptionByType(type: string) {
   // TODO replace with titles of bundles and the features they come with
   switch (type) {
-    case 'Pro':
+    case 'Pure React Pro':
       return [
         'All 8 self-paced workshops',
         'Stream & Download',
@@ -35,7 +35,7 @@ export function descriptionByType(type: string) {
         'Live Recordings Archive Access',
         'Full source code for all modules',
       ]
-    case 'Book':
+    case 'Pure React Book':
       return [
         'Full access to Pure React Book',
         'Read online',
