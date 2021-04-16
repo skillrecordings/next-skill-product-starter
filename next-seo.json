@@ -3,6 +3,7 @@
   "titleTemplate": "%s | My Site",
   "description": "Lorem ipsum dolor sit amet.",
   "favicon": "/favicon.ico",
+  "siteUrl": "my-product.com",
   "email": "team@product.dev",
   "additionalMetaTags": [
     {"property": "author", "content": "Skill Recordings"},

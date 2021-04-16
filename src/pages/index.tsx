@@ -54,6 +54,11 @@ export default function Home() {
                   Login
                 </a>
               </Link>
+              <Link href="/thanks?email=example@team.com">
+                <a className="dark:hover:text-rose-300 hover:text-rose-500">
+                  Thanks
+                </a>
+              </Link>
             </div>
             <Link href="/answer?question=interviews">
               <a className="rounded-lg border-2 dark:hover:bg-gray-900 hover:bg-gray-100 dark:border-gray-900 border-gray-100 dark:bg-black bg-white text-3xl font-extrabold tracking-tight py-24 flex items-center justify-center flex-col transition-colors duration-100 ease-in-out">
