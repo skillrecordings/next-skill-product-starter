@@ -5,6 +5,7 @@ import SEO from '../../next-seo.json'
 import {ThemeProvider} from 'next-themes'
 import '../styles/globals.css'
 import 'focus-visible'
+import {ViewerProvider} from 'contexts/viewer-context'
 
 declare global {
   interface Window {
@@ -20,9 +21,11 @@ function MyApp({Component, pageProps}: AppProps) {
   return (
     <>
       <DefaultSeo {...SEO} />
-      <ThemeProvider attribute="class">
-        <Component {...pageProps} />
-      </ThemeProvider>
+      <ViewerProvider>
+        <ThemeProvider attribute="class">
+          <Component {...pageProps} />
+        </ThemeProvider>
+      </ViewerProvider>
     </>
   )
 }

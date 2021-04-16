@@ -181,13 +181,15 @@ function useAuthedViewer() {
   const bestPurchase = first(sitePurchases)
   const availableUpgrades = bestPurchase?.available_upgrades as AvailableUpgrade[]
   const nextUpgrade = first(availableUpgrades) // we only sell one upgrade
-  const siteSellables = getBundles()
+  const siteSellables: any = getBundles()
   const upgradeFromSellable =
     get(bestPurchase, 'slug') === process.env.NEXT_PUBLIC_PRO_SLUG &&
     !get(bestPurchase, 'coupon.region_restricted', false)
       ? null
       : bestPurchase
-  const upgradeToSellable = find(siteSellables, {slug: nextUpgrade?.slug})
+  const upgradeToSellable = nextUpgrade
+    ? find(siteSellables, {slug: nextUpgrade.slug}) // must add bundles for this to work
+    : null
   const canViewContent = reduce(
     sitePurchases,
     (canViewContent, currentPurchase) => {
