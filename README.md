@@ -113,3 +113,43 @@ const SomeComponent = () => {
   return <></>
 }
 ```
+
+## Set Up Commerce
+
+We use Stripe to capture purchases. There are `TODO`s in `src/components/commerce` to adjust the code based on what kinds of packages we are selling.
+
+You will need to get a Stripe public test token to make purchases in development. This key will be set in the `NEXT_PUBLIC_STRIPE_TOKEN` env variable.
+
+### Commerce in local development
+
+To test purchases on local development you will need:
+
+1. egghead-rails running locally
+2. stripe-cli installed
+3. a test stripe secret key
+4. a bundle set up
+5. a `SiteTenant` and Oauth Application set up
+
+If you have all of these things, then you can start egghead-rails like so:
+
+```shell
+cd ~/path/to/egghead-rails
+yarn develop
+```
+
+Then you can start the stripe cli:
+
+```shell
+stripe listen --forward-to "http://app.egghead.af:5000/stripe_events.json?site_name=my_product_site_name&api_key=stripe_webhook_api_key" --api-key "sk_test_your-stripe-secret-token"
+```
+
+You should notice you will need to replace the values for `my_product_site_name`, `stripe_webhook_api_key` and `sk_test_your-stripe-secret-token`.
+
+You should already have the `site_name` for the product. To get the `stripe_webhook_api_key`, you can run this in the `rails console`.
+
+```ruby
+site_tenant = SiteTenant.find_by(name: 'my_product_site_name')
+stripe_webhook_api_key = site_tenant.stripe_webhook_api_key
+stripe_secret_key = site_tenant.stripe_secret_key # this will be set if the product has already been set up
+stripe_public_key = site_tenant.stripe_publishable_key # this will be set if the product has already been set up
+```
