@@ -8,6 +8,7 @@ export type Resource = {
   id: number
   items: any[]
   url: string
+  square_cover_480_url: string
 }
 
 export interface AvailableUpgrade {
