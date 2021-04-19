@@ -1,8 +1,10 @@
 {
   "title": "My Product",
   "titleTemplate": "%s | My Site",
+  "author": "Joel Hooks",
   "description": "Lorem ipsum dolor sit amet.",
   "favicon": "/favicon.ico",
+  "siteUrl": "my-product.com",
   "email": "team@product.dev",
   "siteUrl": "myproduct.dev",
   "additionalMetaTags": [

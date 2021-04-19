@@ -36,8 +36,8 @@ with a link to access your purchase and start learning.
   const tweet = `https://twitter.com/intent/tweet/?text=Just purchased ${SEO.siteUrl} by @${SEO.twitter.handle}`
   const Share = () => (
     <>
-      <hr className="mt-8" />
-      <div className="py-8 max-w-screen-sm">
+      <hr className="mt-8 dark:border-gray-900 border-gray-100" />
+      <div className="py-8">
         <div className="pb-4 font-semibold">
           Please consider telling your friends about {SEO.siteUrl}, it would
           help me to get a word out. :)
@@ -57,12 +57,14 @@ with a link to access your purchase and start learning.
   )
 
   return (
-    <Layout>
-      <Markdown
-        source={instructionText}
-        className="prose lg:prose-lg max-w-screen-lg mx-auto text-center"
-      />
-      <Share />
+    <Layout meta={{title: 'Thank you!'}}>
+      <div className="max-w-screen-md mx-auto text-center">
+        <Markdown
+          source={instructionText}
+          className="prose dark:prose-dark lg:prose-lg max-w-none"
+        />
+        <Share />
+      </div>
     </Layout>
   )
 }
@@ -79,7 +81,7 @@ export const getServerSideProps = async ({query}: any) => {
 
   return {
     props: {
-      displayEmail,
+      displayEmail: displayEmail || '',
     },
   }
 }

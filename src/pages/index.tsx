@@ -49,6 +49,21 @@ export default function Home() {
                   Unsubscribed
                 </a>
               </Link>
+              <Link href="/login">
+                <a className="dark:hover:text-rose-300 hover:text-rose-500">
+                  Login
+                </a>
+              </Link>
+              <Link href="/thanks?email=example@team.com">
+                <a className="dark:hover:text-rose-300 hover:text-rose-500">
+                  Thanks
+                </a>
+              </Link>
+              <Link href="/buy">
+                <a className="dark:hover:text-rose-300 hover:text-rose-500">
+                  Buy
+                </a>
+              </Link>
             </div>
             <Link href="/answer?question=interviews">
               <a className="rounded-lg border-2 dark:hover:bg-gray-900 hover:bg-gray-100 dark:border-gray-900 border-gray-100 dark:bg-black bg-white text-3xl font-extrabold tracking-tight py-24 flex items-center justify-center flex-col transition-colors duration-100 ease-in-out">
@@ -63,7 +78,11 @@ export default function Home() {
           </h2>
           <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-5">
             <div className="sm:p-8 p-4 border-2 dark:border-gray-900 border-gray-100 dark:bg-black bg-white rounded-lg transition-colors duration-100 ease-in-out">
-              <ConvertkitSubscribeForm>
+              <ConvertkitSubscribeForm
+                onSubmit={() => {
+                  console.log('Configure me!')
+                }}
+              >
                 <div className="pb-4 font-bold sm:text-xl text-lg tracking-tight">
                   Subscribe Form
                 </div>

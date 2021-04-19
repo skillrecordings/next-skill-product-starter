@@ -2,7 +2,10 @@ const withPlugins = require('next-compose-plugins')
 const withImages = require('next-images')
 const withMDX = require('@next/mdx')()
 
-const IMAGE_HOST_DOMAINS = [`res.cloudinary.com`]
+const IMAGE_HOST_DOMAINS = [
+  `res.cloudinary.com`,
+  `d2eip9sf3oo6c2.cloudfront.net`,
+]
 
 const nextConfig = {
   reactStrictMode: true,
