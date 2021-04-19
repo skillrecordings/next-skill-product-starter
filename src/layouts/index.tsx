@@ -7,7 +7,7 @@ type LayoutProps = {
   meta?: any
 }
 
-const DefaultLayout: FunctionComponent<LayoutProps> = ({children, meta}) => {
+const Layout: FunctionComponent<LayoutProps> = ({children, meta}) => {
   const {title, description, titleAppendSiteName = false, url, ogImage} =
     meta || {}
   return (
@@ -35,4 +35,4 @@ const DefaultLayout: FunctionComponent<LayoutProps> = ({children, meta}) => {
   )
 }
 
-export default DefaultLayout
+export default Layout

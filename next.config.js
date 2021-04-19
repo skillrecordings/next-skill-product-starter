@@ -1,4 +1,5 @@
 const withPlugins = require('next-compose-plugins')
+const withImages = require('next-images')
 const withMDX = require('@next/mdx')()
 
 const IMAGE_HOST_DOMAINS = [
@@ -18,6 +19,7 @@ const nextConfig = {
 
 module.exports = withPlugins(
   [
+    withImages(),
     withMDX({
       pageExtensions: ['ts', 'tsx', 'mdx'],
       remarkPlugins: [

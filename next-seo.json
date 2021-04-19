@@ -6,6 +6,7 @@
   "favicon": "/favicon.ico",
   "siteUrl": "my-product.com",
   "email": "team@product.dev",
+  "siteUrl": "myproduct.dev",
   "additionalMetaTags": [
     {"property": "author", "content": "Skill Recordings"},
     {
