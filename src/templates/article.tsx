@@ -1,6 +1,7 @@
 import * as React from 'react'
 import Layout from 'layouts'
 import PoliteConvertkitForm from 'components/forms/convertkit/polite'
+import SEO from '../../next-seo.json'
 
 type ArticleTemplateProps = {
   meta?: any
@@ -23,7 +24,10 @@ const ArticleTemplate: React.FC<ArticleTemplateProps> = ({meta, children}) => {
           {children}
         </main>
         <footer className="mx-auto max-w-screen-md border-t dark:border-gray-800 border-gray-200 py-16">
-          {meta.contributors && `by ${meta.contributors[0].name}`}
+          by{' '}
+          {meta.contributors
+            ? meta.contributors[0].name
+            : SEO.additionalMetaTags[0].content}
         </footer>
       </article>
       <PoliteConvertkitForm peakingContent={'Hello!'}>
