@@ -1,3 +1,9 @@
 module.exports = {
-  plugins: {'@tailwindcss/jit': {}, 'postcss-preset-env': {}},
+  plugins: {
+    tailwindcss: {},
+    autoprefixer: {
+      flexbox: 'no-2009',
+    },
+    'postcss-nested': {},
+  },
 }

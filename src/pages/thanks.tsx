@@ -58,9 +58,9 @@ with a link to access your purchase and start learning.
 
   return (
     <Layout meta={{title: 'Thank you!'}}>
-      <div className="max-w-screen-md mx-auto text-center">
+      <div className="max-w-screen-sm mx-auto">
         <Markdown
-          source={instructionText}
+          children={instructionText}
           className="prose dark:prose-dark lg:prose-lg max-w-none"
         />
         <Share />

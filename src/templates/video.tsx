@@ -18,8 +18,8 @@ const VideoTemplate: React.FC<Resource> = ({resource}) => {
         <article className="py-8">
           <h1 className="text-4xl font-extrabold">{title}</h1>
           <Markdown
+            children={description}
             className="pt-4 prose dark:prose-dark prose-lg"
-            source={description}
           />
         </article>
       </div>
