@@ -110,7 +110,7 @@ const content: Item[] = [
       },
       {
         label: 'Quiz',
-        link: '/answer?question=interviews',
+        link: '/answer?question=essay',
       },
       {
         label: 'Login',

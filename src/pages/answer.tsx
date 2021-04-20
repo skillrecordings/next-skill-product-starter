@@ -1,128 +1,159 @@
-import React, {FunctionComponent} from 'react'
-import {shuffle, isEmpty, get} from 'lodash'
-import MultipleChoiceQuestion from 'components/forms/multiple-choice-question'
+import * as React from 'react'
+import {get, isEmpty, keys} from 'lodash'
 import {useRouter} from 'next/router'
-import axios from 'axios'
-import ReactMarkdown from 'react-markdown'
-import SEO from '../../next-seo.json'
 import Layout from 'layouts'
+import Link from 'next/link'
+import EssayQuestion from 'components/forms/quiz/essay-question'
+import MultipleChoiceQuestion from 'components/forms/quiz/multiple-choice-question'
 
-type AnswerProps = {
-  questions: any
+export type Question = {
+  question: string
+  type: 'multiple-choice' | 'essay'
+  tagId: number
+  correct?: string[] | string
+  answer?: string
+  choices?: {answer: string; label: string}[]
 }
 
-const Answer: FunctionComponent<AnswerProps> = () => {
+export type Questions = {
+  [key: string]: Question
+}
+
+type AnswerProps = {
+  questions: Questions
+}
+
+const Answer: React.FC<AnswerProps> = () => {
   const router = useRouter()
-  const [answered, setAnswered] = React.useState('')
-  const [currentQuestion, setCurrentQuestion] = React.useState('')
+  const [currentQuestion, setCurrentQuestion] = React.useState<Question>()
 
   React.useEffect(() => {
-    const question: any = get(router.query, 'question')
-
-    if (!isEmpty(question)) {
+    const param: any = get(router.query, 'question')
+    if (!isEmpty(param)) {
+      const question = get(questions, param)
       setCurrentQuestion(question)
     }
   }, [router])
 
-  const setAnswer = (answer: string) => {
-    axios.post(`/api/answer`, {
-      tagId: questions[currentQuestion].tagId,
-    })
-    const correct: boolean = questions[currentQuestion].correct === answer
-    setAnswered(correct ? 'correct' : 'wrong')
+  const QuestionToShow = () => {
+    if (!currentQuestion) {
+      return null
+    }
+    switch (currentQuestion.type as string) {
+      case 'multiple-choice':
+        return <MultipleChoiceQuestion question={currentQuestion as Question} />
+      default:
+        return <EssayQuestion question={currentQuestion as Question} />
+    }
   }
 
   return (
-    <Layout>
-      <div className="py-16 max-w-screen-sm mx-auto">
-        {currentQuestion && (
-          <div>
-            <ReactMarkdown className="pb-5 dark:text-white text-black prose dark:prose-dark prose-xl text-2xl font-bold leading-tight">
-              {answered
-                ? answered === 'correct'
-                  ? `Correct! ⭐️`
-                  : `That's the wrong answer.`
-                : questions[currentQuestion].question}
-            </ReactMarkdown>
-
-            {answered ? (
-              answered === 'correct' ? (
-                <div className="prose dark:prose-dark prose-lg">
-                  <p>Nice work. You chose the correct answer.</p>
-                  {questions[currentQuestion].finalQuestion ? (
-                    <p>
-                      This was the last email in the course! I hope it was
-                      helpful and appreciate your time and attention.
-                    </p>
-                  ) : (
-                    <p>
-                      I'll send the next lesson in 5-10 minutes. Check your
-                      inbox.
-                    </p>
-                  )}
-
-                  <p>Thanks, {SEO.openGraph.profile.firstName}</p>
-                </div>
-              ) : (
-                <div className="prose dark:prose-dark prose-lg">
-                  <p>
-                    You didn't answer correctly, but don't worry. Just go back
-                    and re-read the email and check out any linked resources.
-                    You can click the link in your email if you'd like to try
-                    again! 👍
-                  </p>
-                  {questions[currentQuestion].finalQuestion ? (
-                    <p>
-                      This was the last email in the course! I hope it was
-                      helpful and appreciate your time and attention.
-                    </p>
-                  ) : (
-                    <p>
-                      I'll send the next lesson in 5-10 minutes. Check your
-                      inbox.
-                    </p>
-                  )}
-
-                  <p>Thanks, {SEO.openGraph.profile.firstName}</p>
-                </div>
-              )
-            ) : (
-              <MultipleChoiceQuestion
-                onAnswer={setAnswer}
-                choices={shuffle(questions[currentQuestion].choices)}
-              />
-            )}
-          </div>
-        )}
-      </div>
-    </Layout>
+    <>
+      <DevTools questions={questions} />
+      <Layout noIndex meta={{title: 'Quiz'}}>
+        <header>
+          <Link href="/">
+            <a aria-label="Home" className="sm:w-36 w-28 sm:mt-6 mt-4 absolute">
+              <h1 className="sr-only">Quiz</h1>
+            </a>
+          </Link>
+        </header>
+        <div className="max-w-screen-sm w-full mx-auto flex items-center justify-center xl:pt-36 md:pt-32 pt-24 sm:pb-16 pb-8">
+          {QuestionToShow()}
+        </div>
+      </Layout>
+    </>
   )
 }
 
-const questions: any = {
-  interviews: {
-    question: `Which of the following is **not** an additional deliverable you might submit for a coding project?`,
-    tagId: 1988924,
-    correct: 'resume',
+const questions: Questions = {
+  essay: {
+    question: `## Lorem ipsum dolor sit amet?`,
+    type: `essay`,
+    tagId: 0, // TODO
+  },
+  trueFalse: {
+    question: `## True or false: Lorem ipsum dolor sit amet?`,
+    type: `multiple-choice`,
+    tagId: 0, // TODO
+    correct: 'true',
+    answer: `Yes! Lorem ipsum!`,
     choices: [
       {
-        answer: 'improve',
-        label: 'A list of areas you could improve upon',
+        answer: 'true',
+        label: 'Yes',
       },
       {
-        answer: 'resume',
-        label: 'Your resume',
+        answer: 'false',
+        label: 'No',
+      },
+    ],
+  },
+  multipleCorrect: {
+    question: `## Lorem ipsum dolor sit amet?`,
+    type: `multiple-choice`,
+    tagId: 0, // TODO
+    correct: ['one', 'two'],
+    answer: `Yes! Lorem ipsum!`,
+    choices: [
+      {
+        answer: 'one',
+        label: 'One',
       },
       {
-        answer: 'enhancements',
-        label: 'A list of enhancements you might make',
+        answer: 'two',
+        label: 'Two',
       },
       {
-        answer: 'readme',
-        label: 'A README with clear instructions on how to run the app',
+        answer: 'three',
+        label: 'Three',
+      },
+      {
+        answer: 'four',
+        label: 'Four',
       },
     ],
   },
 }
 
+const DevTools: React.FC<{questions: Questions}> = ({questions}) => {
+  const [hidden, setHidden] = React.useState(false)
+  const router = useRouter()
+  if (process.env.NODE_ENV !== 'development' || hidden) {
+    return null
+  }
+
+  return (
+    <nav className="z-10 flex border border-gray-100 flex-col fixed top-5 right-5 rounded-md bg-white shadow-xl p-4 sm:visible invisible">
+      <div className="w-full flex leading-tighter justify-end absolute right-2 top-2">
+        <button
+          onClick={() => setHidden(true)}
+          className="text-xs text-black font-bold"
+        >
+          <span className="not-sr-only">✕</span>
+          <span className="sr-only">close navigation</span>
+        </button>
+      </div>
+      <span className="text-sm font-medium pb-2 text-indigo-600">
+        Questions:
+      </span>
+      <ol className="list-decimal list-inside">
+        {keys(questions).map((q) => (
+          <li className="pb-1" key={q}>
+            <a
+              href={`/answer?question=${q}`}
+              className={
+                get(router.query, 'question') === q
+                  ? 'underline'
+                  : 'hover:underline'
+              }
+            >
+              {q}
+            </a>
+          </li>
+        ))}
+      </ol>
+    </nav>
+  )
+}
 export default Answer

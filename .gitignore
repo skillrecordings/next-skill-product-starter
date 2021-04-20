@@ -33,3 +33,5 @@ yarn-error.log*
 
 # vercel
 .vercel
+
+eslint --fix . --ignore-path ./.gitignore

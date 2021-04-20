@@ -5,9 +5,10 @@ import Footer from 'components/footer'
 
 type LayoutProps = {
   meta?: any
+  noIndex?: boolean
 }
 
-const Layout: FunctionComponent<LayoutProps> = ({children, meta}) => {
+const Layout: FunctionComponent<LayoutProps> = ({children, meta, noIndex}) => {
   const {title, description, titleAppendSiteName = false, url, ogImage} =
     meta || {}
   return (
@@ -23,6 +24,7 @@ const Layout: FunctionComponent<LayoutProps> = ({children, meta}) => {
           images: ogImage ? [ogImage] : undefined,
         }}
         canonical={url}
+        noindex={noIndex}
       />
       <div className="p-5 flex flex-col min-h-screen">
         <Navigation />
