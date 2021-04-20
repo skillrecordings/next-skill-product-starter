@@ -12,7 +12,9 @@ const ConvertkitSubscribeForm: React.FC<ConvertkitSubscribeFormProps> = ({
 }) => {
   return (
     <div id="subscribe">
-      {children}
+      <div className="pb-4 font-bold sm:text-xl text-lg tracking-tight">
+        {children}
+      </div>
       <form
         action={`https://app.convertkit.com/forms/${FORM_ID}/subscriptions`}
         method="post"
