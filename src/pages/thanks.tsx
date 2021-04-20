@@ -9,7 +9,7 @@ const ThanksPage = ({displayEmail}: any) => {
   const emailText =
     displayEmail && displayEmail !== 'undefined' ? `**${displayEmail}**` : ''
   const instructionText = `# Thank you for purchasing ${
-    SEO.siteUrl
+    SEO.title
   }. Please check your inbox.
 ${emailText ? `## ${emailText}` : ''}
 As a final step to access the course you need
