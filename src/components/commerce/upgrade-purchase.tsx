@@ -4,7 +4,7 @@ import get from 'lodash/get'
 import {useViewer} from 'contexts/viewer-context'
 import PurchaseBundle from './purchase-bundle'
 import Image from 'next/image'
-import {descriptionByType} from 'components/commerce'
+import {getBundleDescription} from 'utils/get-bundle-metadata'
 
 function UpgradePurchase() {
   const {upgradeFromSellable, upgradeToSellable} = useViewer()
@@ -43,7 +43,7 @@ function UpgradePurchase() {
             upgradeFromSellable={upgradeFromSellable}
           />
           <ul className="pb-2 font-semibold">
-            {descriptionByType(upgradeToSellable.title)?.map((item: any) => (
+            {getBundleDescription(upgradeToSellable.slug)?.map((item: any) => (
               <li
                 key={item}
                 className="py-1 text-gray-900 dark:text-gray-100 flex items-center"
