@@ -45,11 +45,11 @@ const Invoice: React.FunctionComponent = () => {
     (purchase: any) => purchase.quantity > 1,
   )
   const totalPrice = getTotalPrice(sitePurchases)
-  // const isVerifying = useLoginRequired()
+  const isVerifying = useLoginRequired()
 
-  // if (isVerifying) {
-  //   return null
-  // }
+  if (isVerifying) {
+    return null
+  }
 
   return (
     <Layout meta={{title: 'Invoice for Pure React'}}>

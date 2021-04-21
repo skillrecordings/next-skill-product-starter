@@ -124,6 +124,10 @@ const content: Item[] = [
         label: 'Buy',
         link: '/buy',
       },
+      {
+        label: 'Invoice',
+        link: '/invoice',
+      },
     ],
   },
   {
