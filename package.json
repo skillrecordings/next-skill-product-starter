@@ -55,15 +55,15 @@
     "remark-slug": "^6.0.0",
     "stripe": "^8.144.0",
     "xstate": "^4.18.0",
-    "yup": "^0.32.9"
+    "yup": "^0.32.9",
+    "@tailwindcss/aspect-ratio": "^0.2.0",
+    "@tailwindcss/forms": "^0.3.2",
+    "@tailwindcss/typography": "^0.4.0"
   },
   "devDependencies": {
     "@babel/plugin-transform-react-jsx": "^7.12.16",
     "@emotion/babel-preset-css-prop": "^10.2.1",
     "@mdx-js/loader": "^1.6.22",
-    "@tailwindcss/aspect-ratio": "^0.2.0",
-    "@tailwindcss/forms": "^0.3.2",
-    "@tailwindcss/typography": "^0.4.0",
     "@testing-library/jest-dom": "^5.11.9",
     "@testing-library/react": "^11.2.5",
     "@types/cookie": "^0.4.0",

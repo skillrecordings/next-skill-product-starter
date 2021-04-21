@@ -1,7 +1,7 @@
 import React from 'react'
 import {AppProps} from 'next/app'
 import {DefaultSeo} from 'next-seo'
-import SEO from '../../next-seo.json'
+import config from '../../config.json'
 import {ThemeProvider} from 'next-themes'
 import '../styles/globals.css'
 import 'focus-visible'
@@ -20,7 +20,7 @@ declare global {
 function MyApp({Component, pageProps}: AppProps) {
   return (
     <>
-      <DefaultSeo {...SEO} />
+      <DefaultSeo {...config} />
       <ViewerProvider>
         <ThemeProvider attribute="class">
           <Component {...pageProps} />

@@ -1,6 +1,6 @@
 import * as React from 'react'
 import Layout from 'layouts'
-import SEO from '../../next-seo.json'
+import config from '../../config.json'
 import get from 'lodash/get'
 import Markdown from 'react-markdown'
 import {fetchStripeCheckoutSession} from 'utils/stripe'
@@ -9,7 +9,7 @@ const ThanksPage = ({displayEmail}: any) => {
   const emailText =
     displayEmail && displayEmail !== 'undefined' ? `**${displayEmail}**` : ''
   const instructionText = `# Thank you for purchasing ${
-    SEO.title
+    config.title
   }. Please check your inbox.
 ${emailText ? `## ${emailText}` : ''}
 As a final step to access the course you need
@@ -33,13 +33,13 @@ with a link to access your purchase and start learning.
     </svg>
   )
 
-  const tweet = `https://twitter.com/intent/tweet/?text=Just purchased ${SEO.siteUrl} by @${SEO.twitter.handle}`
+  const tweet = `https://twitter.com/intent/tweet/?text=Just purchased ${config.siteUrl} by @${config.twitter.handle}`
   const Share = () => (
     <>
       <hr className="mt-8 dark:border-gray-900 border-gray-100" />
       <div className="py-8">
         <div className="pb-4 font-semibold">
-          Please consider telling your friends about {SEO.siteUrl}, it would
+          Please consider telling your friends about {config.siteUrl}, it would
           help me to get a word out. :)
         </div>
         <a

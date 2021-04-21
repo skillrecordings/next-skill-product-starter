@@ -1,4 +1,4 @@
-import SEO from '../../../../next-seo.json'
+import config from '../../../../config.json'
 import React from 'react'
 
 const CompletedMessage: React.FC<{
@@ -9,7 +9,7 @@ const CompletedMessage: React.FC<{
     <div className="font-medium prose sm:prose-xl prose-lg pt-10 text-center">
       <p>I'll send the next lesson in 5-10 minutes. Check your inbox.</p>
       <p>
-        Thanks, <br /> {SEO.openGraph.profile.firstName}
+        Thanks, <br /> {config.openGraph.profile.firstName}
       </p>
     </div>
   ) : answeredCorrectly ? (
@@ -17,7 +17,7 @@ const CompletedMessage: React.FC<{
       <p>Nice work. You chose the correct answer!</p>
       <p>I'll send the next lesson in 5-10 minutes. Check your inbox.</p>
       <p>
-        Thanks, <br /> {SEO.openGraph.profile.firstName}
+        Thanks, <br /> {config.openGraph.profile.firstName}
       </p>
     </div>
   ) : (
@@ -30,7 +30,7 @@ const CompletedMessage: React.FC<{
       <p>I'll send the next email in 5-10 minutes too so you can learn more.</p>
 
       <p>
-        Thanks, <br /> {SEO.openGraph.profile.firstName}
+        Thanks, <br /> {config.openGraph.profile.firstName}
       </p>
     </div>
   )

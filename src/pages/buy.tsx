@@ -5,6 +5,7 @@ import ProdBundles from '../../data/bundles.production.json'
 import Commerce from '../components/commerce'
 import {SellableResource} from '@types'
 import Layout from 'layouts'
+import config from '../../config.json'
 
 type BuyProps = {
   bundles: SellableResource[]
@@ -12,7 +13,7 @@ type BuyProps = {
 
 const Buy: FunctionComponent<BuyProps> = ({bundles}) => {
   return (
-    <Layout meta={{title: 'Get My Product'}}>
+    <Layout meta={{title: `Buy ${config.title}`}}>
       <Commerce bundles={bundles} />
     </Layout>
   )

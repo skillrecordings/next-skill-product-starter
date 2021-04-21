@@ -1,6 +1,7 @@
 import * as React from 'react'
-import NEXT_SEO from '../../next-seo.json'
+import config from '../../config.json'
 import {useLocalStorage} from 'react-use'
+import Image from 'next/image'
 import {format, parseISO} from 'date-fns'
 import {useViewer} from 'contexts/viewer-context'
 import reduce from 'lodash/reduce'
@@ -44,11 +45,11 @@ const Invoice: React.FunctionComponent = () => {
     (purchase: any) => purchase.quantity > 1,
   )
   const totalPrice = getTotalPrice(sitePurchases)
-  const isVerifying = useLoginRequired()
+  // const isVerifying = useLoginRequired()
 
-  if (isVerifying) {
-    return null
-  }
+  // if (isVerifying) {
+  //   return null
+  // }
 
   return (
     <Layout meta={{title: 'Invoice for Pure React'}}>
@@ -56,13 +57,13 @@ const Invoice: React.FunctionComponent = () => {
         <TeamInvites teamPurchases={teamPurchases} />
         <div className="flex sm:flex-row flex-col items-center justify-between py-5 print:hidden">
           <h2 className="text-lg font-medium leading-tight sm:mb-0 mb-4">
-            Your Invoice for {NEXT_SEO.siteUrl}
+            Your Invoice for {config.siteUrl}
           </h2>
           <button
             onClick={() => {
               window.print()
             }}
-            className="flex items-center leading-6 px-5 py-3 rounded-md bg-blue-600 text-white hover:bg-blue-700 transition-colors ease-in-out duration-200"
+            className="flex items-center leading-6 px-5 py-3 rounded-md bg-black dark:bg-white dark:text-black text-white transition-colors ease-in-out duration-200"
           >
             Download PDF or Print
           </button>
@@ -71,18 +72,19 @@ const Invoice: React.FunctionComponent = () => {
           <div className="px-10 py-16">
             <div className="grid grid-cols-3 w-full justify-between items-start">
               <div className="col-span-2 flex items-center">
-                {/* <Logo className="w-10 mr-2" /> */}
-                <img
-                  src="https://p-ZmFjNlQ.b3.n0.cdn.getcloudapp.com/items/eDujW60v/07d99a82-d28b-4cb1-ae18-1975721ee24c.svg?v=b2027440049cfb98413ea605290b3105"
-                  width={60}
+                <Image
+                  src="/placeholder-rect.svg"
+                  alt={config.title}
+                  width={50}
+                  height={50}
                 />
                 <span className="sm:inline-block hidden print:inline-block text-lg font-semibold ml-2">
-                  {NEXT_SEO.siteUrl}
+                  {config.siteUrl}
                 </span>
               </div>
               <div>
                 <h5 className="uppercase text-xs mb-2 text-gray-500">From</h5>
-                {NEXT_SEO.title} with {NEXT_SEO.author}
+                {config.title} with {config.author}
                 <br />
                 co egghead.io LLC
                 <br />

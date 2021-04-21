@@ -6,9 +6,15 @@ import Footer from 'components/footer'
 type LayoutProps = {
   meta?: any
   noIndex?: boolean
+  className?: string
 }
 
-const Layout: FunctionComponent<LayoutProps> = ({children, meta, noIndex}) => {
+const Layout: FunctionComponent<LayoutProps> = ({
+  children,
+  className,
+  meta,
+  noIndex,
+}) => {
   const {title, description, titleAppendSiteName = false, url, ogImage} =
     meta || {}
   return (
@@ -26,7 +32,7 @@ const Layout: FunctionComponent<LayoutProps> = ({children, meta, noIndex}) => {
         canonical={url}
         noindex={noIndex}
       />
-      <div className="p-5 flex flex-col min-h-screen">
+      <div className={`p-5 flex flex-col min-h-screen ${className}`}>
         <Navigation />
         <main className="flex-grow flex flex-col justify-center">
           {children}

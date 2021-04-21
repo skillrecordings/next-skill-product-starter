@@ -1,6 +1,6 @@
 import * as React from 'react'
 import DarkModeToggle from './color-mode-toggle'
-import SEO from '../../next-seo.json'
+import config from '../../config.json'
 import Link from 'next/link'
 
 const Navigation = () => {
@@ -8,7 +8,7 @@ const Navigation = () => {
     <nav className="w-full flex items-center justify-between">
       <Link href="/">
         <a className="dark:hover:text-rose-300 hover:text-rose-500 text-lg font-bold tracking-tight leading-tight">
-          {SEO.title}
+          {config.title}
         </a>
       </Link>
       <DarkModeToggle />

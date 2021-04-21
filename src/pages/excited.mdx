@@ -1,5 +1,5 @@
-export const firstName = SEO.openGraph.profile.firstName
-export const productTitle = SEO.title
+export const firstName = config.openGraph.profile.firstName
+export const productTitle = config.title
 
 export const Message = () => (
   <p>
@@ -18,7 +18,7 @@ export const Message = () => (
   {firstName}
 </div>
 
-import SEO from '../../next-seo.json'
+import config from '../../config.json'
 import Layout from 'layouts'
 
 export default ({children}) => (

@@ -9,14 +9,6 @@ import {motion} from 'framer-motion'
 import {isEmpty, get, find, noop} from 'lodash'
 import Spinner from 'components/spinner'
 
-type PurchaseButtonProps = {
-  purchasing?: boolean
-  children?: string
-  bundle: SellableResource
-  isProPackage: boolean
-  onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void
-}
-
 // problem with `react-stripe-checkout` not having these types
 // https://github.com/azmenak/react-stripe-checkout/pull/152
 interface StripeCheckoutPropsExtended extends StripeCheckoutProps {
@@ -33,6 +25,14 @@ const StripeCheckoutExtended = ({
   <StripeCheckout token={token} stripeKey={stripeKey} {...rest} />
 )
 
+type PurchaseButtonProps = {
+  purchasing?: boolean
+  children?: string
+  bundle: SellableResource
+  isProPackage: boolean
+  onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void
+}
+
 const PurchaseButton = ({
   purchasing,
   children,
@@ -40,16 +40,14 @@ const PurchaseButton = ({
   onClick,
   isProPackage,
 }: PurchaseButtonProps) => {
-  const purchasingStyles = 'opacity-50 cursor-default'
   return (
     <button
-      className={`${
-        purchasing ? purchasingStyles : ''
-      } flex text-center justify-center px-5 py-4 ${
+      disabled={purchasing}
+      className={`flex text-center justify-center px-16 py-4 mx-auto font-semibold rounded-lg ${
         isProPackage
-          ? 'bg-gradient-to-t from-blue-600 to-blue-500 text-white'
-          : 'sm:border-2 sm:border-blue-500 sm:text-blue-600 dark:sm:text-white sm:from-white sm:to-white dark:sm:from-gray-900 dark:sm:to-gray-900 bg-gradient-to-t from-blue-600 to-blue-500 dark:hover:from-blue-600 dark:hover:to-blue-500 text-white hover:from-blue-600 hover:to-blue-500 hover:text-white'
-      } hover:shadow-xl transform hover:scale-105 dark:bg-white  rounded-lg w-full font-bold text-lg transition-all ease-in-out duration-200 focus:scale-100`}
+          ? 'dark:bg-white dark:text-black bg-black text-white'
+          : 'dark:bg-white dark:text-black bg-black text-white'
+      }`}
       aria-describedby={`${bundle.title} Tier`}
       onClick={onClick}
     >
@@ -85,7 +83,7 @@ const PurchaseBundle = ({
   )
   const [isPPP, setIsPPP] = React.useState(false)
   // const {subscriber} = useConvertkit()
-  const isProPackage = bundle.title === 'Pure React Pro'
+  const isProPackage = bundle.slug === process.env.NEXT_PUBLIC_PRO_SLUG
 
   const isPurchasing =
     state.matches('stripePurchase') ||
@@ -202,6 +200,9 @@ const PurchaseBundle = ({
     quantity: state.context.quantity,
   })
 
+  const isDiscounted =
+    (state.context.quantity && state.context.quantity > 4) || displayPercentOff
+
   const expiresAt =
     Number(state.context?.price?.coupon?.coupon_expires_at) * 1000 || false
 
@@ -211,9 +212,9 @@ const PurchaseBundle = ({
     } else if (planType === 'team') {
       return 'Level Up Your Team'
     } else if (isProPackage) {
-      return 'Invest In Your Career'
+      return 'Buy Now'
     } else {
-      return 'Invest In Your Career'
+      return 'Buy Now'
     }
   }
 
@@ -227,125 +228,113 @@ const PurchaseBundle = ({
 
   return (
     <>
-      <div className="pb-5">
+      <div className="text-center space-y-5">
         <div>
-          <h3
-            className={`text-center md:text-2xl text-2xl leading-tight font-bold`}
-            id={`tier-${bundle.title}`}
-          >
+          <h2 className="text-3xl font-bold" id={`tier-${bundle.title}`}>
             {bundle.title}
-          </h3>
-          <h4 className="text-center text-blue-500 dark:text-blue-400 pb-5">
-            {bundle.description || '21 chapters of React knowledge'}
-          </h4>
-          {state.context.error && (
-            <div className="w-full bg-red-100 dark:bg-red-500 text-red-700 dark:text-red-100 p-4 mt-4 rounded-lg mb-4 bg-opacity-100 dark:bg-opacity-20">
-              <h4 className="text-tomato-600 w-full text-center">
-                🚨 There was an error processing your card.{' '}
-                <strong>{state.context.error}</strong>. Please contact your
-                bank. Reload the page to try another card.
-              </h4>
-            </div>
-          )}
-          {expiresAt && !isPPP && <Countdown date={expiresAt} />}
-          <div className="flex items-center justify-center">
-            <span className="px-3 flex items-start leading-none tracking-tight text-gray-900 sm:text-6xl">
-              <span className="mt-1 mr-1 text-3xl font-medium text-gray-700 dark:text-gray-400">
-                $
-              </span>
-              <span className="font-extrabold text-6xl text-black dark:text-white">
+          </h2>
+          <h4>{bundle.description}</h4>
+        </div>
+        {state.context.error && (
+          <div className="w-full bg-rose-100 dark:bg-rose-500 text-rose-800 dark:text-rose-50 p-4 mt-4 rounded-md">
+            <h4 className=" w-full text-center">
+              There was an error processing your card.{' '}
+              <strong>{state.context.error}</strong>. Please contact your bank.
+              Reload the page to try another card.
+            </h4>
+          </div>
+        )}
+        {expiresAt && !isPPP && <Countdown date={expiresAt} />}
+        <div className="flex flex-col items-center justify-center">
+          <div className="flex items-center">
+            <div>
+              <span className="align-top">$</span>
+              <span className="text-4xl font-semibold tabular-nums">
                 {displayPrice}
               </span>
-              {((state.context.quantity && state.context.quantity > 4) ||
-                displayPercentOff) && (
-                <div className="flex flex-col">
-                  <span className="ml-2 font-medium line-through text-4xl text-black dark:text-white">
-                    {typeof displayFullPrice === 'number' &&
-                      displayFullPrice * (state.context.quantity || 1)}
-                  </span>
-                  {displayPercentOff && (
-                    <span className="text-base ml-2 tracking-normal font-semibold text-green-500">
-                      {`Save ${displayPercentOff}%`}
-                    </span>
-                  )}
-                </div>
-              )}
-            </span>
-          </div>
-          <div className="mb-8 opacity-70 text-center">yours forever</div>
-          {isEmpty(upgradeFromSellable) && isProPackage && (
-            <motion.div
-              initial={{opacity: 0, margin: '0px 0px'}}
-              animate={{opacity: 1, margin: '20px 0px'}}
-              exit={{opacity: 0, margin: '0px 0px'}}
-              className="flex justify-center"
-            >
-              <div className="flex space-x-3 items-center">
-                <label htmlFor="quantity" className="">
-                  Quantity
-                </label>
-                <input
-                  value={state.context.quantity}
-                  onChange={(event) => {
-                    const newQuantity = event.target.value
-                    setTeamQuantity({quantity: Number(newQuantity)})
-                  }}
-                  className="form-input text-lg text-center flex font-semibold leading-tight border-gray-200 dark:border-gray-800 w-16 dark:bg-gray-900 rounded-full bg-gray-100 text-black dark:text-white"
-                  name="quantity"
-                  type="number"
-                  min="1"
-                  max="1000"
-                />
+            </div>
+            {isDiscounted && (
+              <div className="text-sm text-left leading-tight pl-1 flex flex-col">
+                <del>
+                  $
+                  {typeof displayFullPrice === 'number' &&
+                    displayFullPrice * (state.context.quantity || 1)}
+                </del>
+                {displayPercentOff && (
+                  <strong>Save {displayPercentOff}%</strong>
+                )}
               </div>
-            </motion.div>
-          )}
-        </div>
-        <div>
-          <div className="rounded-lg">
-            {stripeCheckoutV1Enabled && (
-              <StripeCheckoutExtended
-                email={get(viewer, 'email')}
-                allowRememberMe={false}
-                ComponentClass={'div'}
-                currency={'USD'}
-                locale={'en'}
-                panelLabel={'Pay'}
-                triggerEvent={'onClick'}
-                zipCode={false}
-                token={onStripeToken}
-                opened={onOpenStripePurchase}
-                closed={onCloseStripePurchase}
-                name={bundle.title}
-                description={bundle.description}
-                amount={dollarsToCents(displayPrice)}
-                stripeKey={process.env.NEXT_PUBLIC_STRIPE_TOKEN as string}
-                image={bundle.square_cover_480_url}
-              >
-                <PurchaseButton isProPackage={isProPackage} bundle={bundle}>
-                  {getPurchaseButtonText()}
-                </PurchaseButton>
-              </StripeCheckoutExtended>
             )}
-            {!stripeCheckoutV1Enabled &&
-              (disablePurchaseButton ? (
-                <PurchaseButton
-                  purchasing
-                  isProPackage={isProPackage}
-                  bundle={bundle}
-                >
-                  Navigating to checkout...
-                </PurchaseButton>
-              ) : (
-                <PurchaseButton
-                  onClick={createStripeSession}
-                  isProPackage={isProPackage}
-                  bundle={bundle}
-                >
-                  {getPurchaseButtonText()}
-                </PurchaseButton>
-              ))}
           </div>
+          <div className="text-sm opacity-70">yours forever</div>
         </div>
+        {isEmpty(upgradeFromSellable) && isProPackage && (
+          <div className="flex justify-center">
+            <div className="flex space-x-2 items-center">
+              <label htmlFor="quantity" className="text-sm">
+                Quantity
+              </label>
+              <input
+                value={state.context.quantity}
+                onChange={(event) => {
+                  const newQuantity = event.target.value
+                  setTeamQuantity({quantity: Number(newQuantity)})
+                }}
+                className="border-gray-300 dark:border-gray-700 dark:bg-black dark:text-white"
+                name="quantity"
+                type="number"
+                min="1"
+                max="1000"
+              />
+            </div>
+          </div>
+        )}
+
+        <div>
+          {stripeCheckoutV1Enabled && (
+            <StripeCheckoutExtended
+              email={get(viewer, 'email')}
+              allowRememberMe={false}
+              ComponentClass={'div'}
+              currency={'USD'}
+              locale={'en'}
+              panelLabel={'Pay'}
+              triggerEvent={'onClick'}
+              zipCode={false}
+              token={onStripeToken}
+              opened={onOpenStripePurchase}
+              closed={onCloseStripePurchase}
+              name={bundle.title}
+              description={bundle.description}
+              amount={dollarsToCents(displayPrice)}
+              stripeKey={process.env.NEXT_PUBLIC_STRIPE_TOKEN as string}
+              image={bundle.square_cover_480_url}
+            >
+              <PurchaseButton isProPackage={isProPackage} bundle={bundle}>
+                {getPurchaseButtonText()}
+              </PurchaseButton>
+            </StripeCheckoutExtended>
+          )}
+          {!stripeCheckoutV1Enabled &&
+            (disablePurchaseButton ? (
+              <PurchaseButton
+                purchasing
+                isProPackage={isProPackage}
+                bundle={bundle}
+              >
+                Navigating to checkout...
+              </PurchaseButton>
+            ) : (
+              <PurchaseButton
+                onClick={createStripeSession}
+                isProPackage={isProPackage}
+                bundle={bundle}
+              >
+                {getPurchaseButtonText()}
+              </PurchaseButton>
+            ))}
+        </div>
+
         {/* {teamAvailable && (
           <motion.div layout className="mt-10 flex justify-center w-full">
             <TeamPlanToggle
@@ -355,22 +344,23 @@ const PurchaseBundle = ({
             />
           </motion.div>
         )} */}
+
+        {isProPackage &&
+          displayParityCouponOffer &&
+          state.context.quantity === 1 &&
+          !isEmpty(parityCoupon) &&
+          planType === 'individual' && (
+            <div className="pb-5 max-w-screen-sm mx-auto">
+              <ParityCouponMessage
+                coupon={parityCoupon}
+                countryName={countryName}
+                onApply={onApplyParityCoupon}
+                onDismiss={onDismissParityCoupon}
+                isPPP={isPPP}
+              />
+            </div>
+          )}
       </div>
-      {isProPackage &&
-        displayParityCouponOffer &&
-        state.context.quantity === 1 &&
-        !isEmpty(parityCoupon) &&
-        planType === 'individual' && (
-          <div className="pb-5 max-w-screen-sm mx-auto">
-            <ParityCouponMessage
-              coupon={parityCoupon}
-              countryName={countryName}
-              onApply={onApplyParityCoupon}
-              onDismiss={onDismissParityCoupon}
-              isPPP={isPPP}
-            />
-          </div>
-        )}
     </>
   )
 }

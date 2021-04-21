@@ -1,5 +1,5 @@
-export const firstName = SEO.openGraph.profile.firstName
-export const supportEmail = SEO.email
+export const firstName = config.openGraph.profile.firstName
+export const supportEmail = config.email
 
 export const Message = () => (
   <p>
@@ -21,7 +21,7 @@ Please check your inbox for an email that just got sent. You'll need to click th
   {firstName}
 </div>
 
-import SEO from '../../next-seo.json'
+import config from '../../config.json'
 import Layout from 'layouts'
 
 export default ({children}) => (
