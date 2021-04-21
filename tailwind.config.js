@@ -12,6 +12,9 @@ module.exports = {
       colors: {
         ...colors,
       },
+      screens: {
+        print: {raw: 'print'},
+      },
       typography: (theme) => ({
         DEFAULT: {
           css: {

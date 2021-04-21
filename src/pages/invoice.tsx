@@ -52,8 +52,8 @@ const Invoice: React.FunctionComponent = () => {
   }
 
   return (
-    <Layout meta={{title: 'Invoice for Pure React'}}>
-      <div className="max-w-screen-md mx-auto py-16">
+    <Layout meta={{title: 'Invoice for Pure React'}} className="print:block">
+      <div className="max-w-screen-md mx-auto py-16 print:py-0">
         <TeamInvites teamPurchases={teamPurchases} />
         <div className="flex sm:flex-row flex-col items-center justify-between py-5 print:hidden">
           <h2 className="text-lg font-medium leading-tight sm:mb-0 mb-4">
