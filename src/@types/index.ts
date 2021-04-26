@@ -9,6 +9,8 @@ export type Resource = {
   items: any[]
   url: string
   square_cover_480_url: string
+  square_cover_large_url: string
+  duration: number
 }
 
 export interface AvailableUpgrade {
@@ -79,4 +81,14 @@ export type Viewer = {
   opted_out: boolean
   purchases: any[]
   accounts: StripeAccount[]
+}
+
+export type Achievement = {
+  title: string
+  earned: boolean
+  image: string
+  link?: {
+    children: string
+    onClick: () => void
+  }
 }

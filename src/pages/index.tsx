@@ -128,6 +128,10 @@ const content: Item[] = [
         label: 'Invoice',
         link: '/invoice',
       },
+      {
+        label: 'Learn',
+        link: '/learn',
+      },
     ],
   },
   {
