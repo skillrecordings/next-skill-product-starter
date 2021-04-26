@@ -30,12 +30,6 @@ const LoginForm: FunctionComponent<LoginFormProps> = ({
   const [isError, setIsError] = React.useState(false)
   const {requestSignInEmail} = useViewer()
 
-  const image = isSubmitted
-    ? '/gray-decoration@2x.png'
-    : isError
-    ? '/red-decoration@2x.png'
-    : '/friends@2x.png'
-
   return (
     <Layout meta={{title: `Log in to My Product`}}>
       <div
@@ -45,8 +39,8 @@ const LoginForm: FunctionComponent<LoginFormProps> = ({
             : 'w-full mx-auto md:py-32 py-16 flex flex-col items-center justify-center'
         }
       >
-        <Image src="/images/module.svg" width={171} height={161} alt="" />
-        <div className={`sm:mx-auto rounded-lg ${image ? 'mt-10' : ''}`}>
+        <Image src="/placeholder-rect.svg" width={150} height={150} alt="" />
+        <div className="sm:mx-auto rounded-lg mt-10">
           {isSubmitted && (
             <h2 className="text-center text-3xl leading-9 font-bold">
               Email Sent

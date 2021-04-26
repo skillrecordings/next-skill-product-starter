@@ -6,14 +6,17 @@ import Commerce from '../components/commerce'
 import {SellableResource} from '@types'
 import Layout from 'layouts'
 import config from '../../config.json'
+import ClaimCoupon from 'components/commerce/claim-coupon'
 
 type BuyProps = {
   bundles: SellableResource[]
 }
 
 const Buy: FunctionComponent<BuyProps> = ({bundles}) => {
+  const sellable = bundles[0]
   return (
     <Layout meta={{title: `Buy ${config.title}`}}>
+      <ClaimCoupon sellable={sellable} />
       <Commerce bundles={bundles} />
     </Layout>
   )
