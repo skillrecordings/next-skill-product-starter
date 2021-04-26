@@ -1,6 +1,7 @@
 import * as React from 'react'
 import useBundleProgress from './use-bundle-progress'
 import type {Achievement} from '@types'
+import {isEmpty} from 'lodash'
 
 export default function useAchievements(purchasedBundle: any) {
   const {progress} = useBundleProgress(purchasedBundle)
@@ -10,12 +11,14 @@ export default function useAchievements(purchasedBundle: any) {
   const [completedArr, setCompletedArr] = React.useState([])
 
   React.useEffect(() => {
-    const completed = modules.map((module: any) => module.state === 'completed')
+    const completed = modules?.map(
+      (module: any) => module.state === 'completed',
+    )
     setCompletedArr(completed)
   }, [progress])
 
   // TODO: achievements should vary based on tier since they have different number of modules
-  const achievements: Achievement[] = [
+  const achievements: Achievement[] | any = !isEmpty(completedArr) && [
     {
       title: 'Finish 1st module',
       earned: completedArr[0] === true,

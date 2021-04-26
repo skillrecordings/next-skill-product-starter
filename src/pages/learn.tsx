@@ -8,6 +8,8 @@ import getBundles from 'utils/get-bundles'
 import {Resource, SellableResource} from '@types'
 import get from 'lodash/get'
 import find from 'lodash/find'
+import first from 'lodash/first'
+import indexOf from 'lodash/indexOf'
 import {useViewer} from 'contexts/viewer-context'
 import getCollections from 'utils/get-collections'
 import useBundleProgress from 'hooks/use-bundle-progress'
@@ -16,7 +18,6 @@ import UpgradePurchase from 'components/commerce/upgrade-purchase'
 import Module from 'components/learn/module'
 import CallToAction from 'components/learn/cta'
 import Spinner from 'components/spinner'
-import {indexOf} from 'lodash'
 import Achievements from 'components/learn/achievements'
 // import {titlizeChapter} from 'utils/titlizeChapter'
 // import {bookFilePaths} from 'utils/mdxUtils'
@@ -52,6 +53,25 @@ const Learn: FunctionComponent<Props> = ({bundles}) => {
   if (isVerifying || isVerifyingBulkPurchase) {
     return null
   }
+
+  const currentUsersModule = get(viewer, 'current_course', {})
+  const {completedLessonsCount, totalLessons} = getModuleProgress(
+    currentUsersModule?.slug,
+  )
+
+  const currentModule =
+    completedLessonsCount === totalLessons
+      ? first(
+          progress.data.resources.filter((r: any) => r.state !== 'completed'),
+        )
+      : find(modules, {
+          slug: currentUsersModule.slug,
+        })
+
+  const fullCurrentModule = find(modules, {slug: currentModule?.slug})
+
+  console.log({currentModule})
+
   // const bookDownloadUrl = purchasedBundle?.items[0]?.url as string | undefined
   // const bannerProps = isEmpty(viewingAsUserEmail)
   //   ? {
@@ -61,12 +81,6 @@ const Learn: FunctionComponent<Props> = ({bundles}) => {
   //       path: '/invoice',
   //     }
   //   : {text: ` You are now viewing as ${viewingAsUserEmail}. Logout to reset.`}
-
-  const currentUsersModule = get(viewer, 'current_course', {})
-  const currentModule = find(modules, {
-    slug: currentUsersModule.slug,
-  })
-  const {nextLesson} = getModuleProgress(currentModule?.slug)
 
   return (
     <Layout>
@@ -80,9 +94,12 @@ const Learn: FunctionComponent<Props> = ({bundles}) => {
           <div className="space-y-3 sm:sticky top-5">
             <CallToAction
               viewer={viewer}
-              nextLesson={nextLesson}
+              nextLesson={currentModule?.next_resource}
               firstLesson={collections[0]?.items[0]}
-              currentModule={currentModule}
+              currentModule={{
+                ...currentModule,
+                title: fullCurrentModule?.title,
+              }}
               progress={getModuleProgress(currentModule?.slug)}
             />
 
