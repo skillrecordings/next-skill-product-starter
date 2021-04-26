@@ -45,7 +45,7 @@ const Play: React.FC<{items: LessonResource[]; progress: any}> = ({
         {items.map((item) => {
           const completed = isLessonCompleted(item.slug)
           return (
-            <Link href={`/lessons/${item.slug}`}>
+            <Link key={item.slug} href={`/lessons/${item.slug}`}>
               <a
                 className={`${
                   completed
