@@ -70,8 +70,6 @@ const Learn: FunctionComponent<Props> = ({bundles}) => {
 
   const fullCurrentModule = find(modules, {slug: currentModule?.slug})
 
-  console.log({currentModule})
-
   // const bookDownloadUrl = purchasedBundle?.items[0]?.url as string | undefined
   // const bannerProps = isEmpty(viewingAsUserEmail)
   //   ? {

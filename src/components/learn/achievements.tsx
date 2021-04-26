@@ -16,6 +16,7 @@ const Achievements: React.FC<{
           const {earned, title, link} = achievement
           return (
             <div
+              key={title}
               className={`flex space-x-5 items-center leading-tight dark:bg-gray-900 bg-gray-100 ${
                 earned
                   ? 'py-4 px-6 border-l-4 border-teal-500'
@@ -27,7 +28,7 @@ const Achievements: React.FC<{
                   earned ? 'dark:text-teal-400 text-teal-500' : 'opacity-50'
                 }
               >
-                <i className="gg-trophy" />
+                <i className={earned ? 'gg-check' : 'gg-trophy'} />
               </div>
               <div>
                 <Markdown className="font-medium leading-none">

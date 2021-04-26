@@ -22,7 +22,7 @@ const CallToAction: React.FC<{
     <div className="bg-gray-100 dark:bg-gray-900 leading-tight">
       <div className="p-8">
         <h1 className="text-xl font-semibold leading-tight">{greeting}</h1>
-        {currentModule && leftToWatch !== 0 && (
+        {currentModule.title && leftToWatch !== 0 && (
           <p className="pt-2 opacity-80">
             There {pluralize('is', leftToWatch)}{' '}
             {pluralize('lesson', leftToWatch, true)} left to watch in{' '}
