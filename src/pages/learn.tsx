@@ -54,8 +54,8 @@ const Learn: FunctionComponent<Props> = ({bundles}) => {
     return null
   }
 
-  const currentUsersModule = get(viewer, 'current_course', {})
-  const {completedLessonsCount, totalLessons} = getModuleProgress(
+  const currentUsersModule = get(viewer, 'current_course', first(modules))
+  const {completedLessonsCount, totalLessons, nextLesson} = getModuleProgress(
     currentUsersModule?.slug,
   )
 
@@ -65,11 +65,11 @@ const Learn: FunctionComponent<Props> = ({bundles}) => {
           progress.data.resources.filter((r: any) => r.state !== 'completed'),
         )
       : find(modules, {
-          slug: currentUsersModule.slug,
+          slug: currentUsersModule?.slug,
         })
 
   const fullCurrentModule = find(modules, {slug: currentModule?.slug})
-
+  console.log(nextLesson)
   // const bookDownloadUrl = purchasedBundle?.items[0]?.url as string | undefined
   // const bannerProps = isEmpty(viewingAsUserEmail)
   //   ? {
@@ -92,7 +92,7 @@ const Learn: FunctionComponent<Props> = ({bundles}) => {
           <div className="space-y-3 sm:sticky top-5">
             <CallToAction
               viewer={viewer}
-              nextLesson={currentModule?.next_resource}
+              nextLesson={nextLesson}
               firstLesson={collections[0]?.items[0]}
               currentModule={{
                 ...currentModule,

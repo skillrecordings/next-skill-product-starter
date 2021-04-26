@@ -12,11 +12,13 @@ const CallToAction: React.FC<{
   firstLesson: any
   progress: any
 }> = ({viewer, firstLesson, nextLesson, progress, currentModule}) => {
-  const greeting = isEmpty(viewer?.name)
-    ? `Hello, ready to ${nextLesson ? 'continue' : 'start'} learning?`
-    : `Hey ${viewer.name}, ready to continue learning?`
   const {completedLessonsCount, totalLessons} = progress
   const leftToWatch = totalLessons - completedLessonsCount
+  const greeting = isEmpty(viewer?.name)
+    ? `Hello, ready to ${
+        completedLessonsCount > 0 ? 'continue' : 'start'
+      } learning?`
+    : `Hey ${viewer.name}, ready to continue learning?`
 
   return (
     <div className="bg-gray-100 dark:bg-gray-900 leading-tight">
@@ -42,7 +44,9 @@ const CallToAction: React.FC<{
               </a>
             </Link>
           ) : (
-            <Spinner />
+            <div className="p-8">
+              <Spinner />
+            </div>
           )}
         </>
       ) : (
