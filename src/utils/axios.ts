@@ -1,8 +1,22 @@
 import axios from 'axios'
+import {ACCESS_TOKEN_KEY} from './auth'
 
 axios.interceptors.request.use(
   function (config: any) {
-    const headers = {...config.headers}
+    const authToken =
+      typeof localStorage !== 'undefined'
+        ? localStorage.getItem(ACCESS_TOKEN_KEY)
+        : null
+    const defaultHeaders = authToken
+      ? {
+          Authorization: `Bearer ${authToken}`,
+          'X-SITE-CLIENT': process.env.CLIENT_ID,
+        }
+      : {'X-SITE-CLIENT': process.env.CLIENT_ID}
+    const headers = {
+      ...defaultHeaders,
+      ...config.headers,
+    }
 
     return {...config, headers}
   },
