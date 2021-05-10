@@ -6,6 +6,7 @@ import {ThemeProvider} from 'next-themes'
 import '../styles/globals.css'
 import 'focus-visible'
 import {ViewerProvider} from 'contexts/viewer-context'
+import {ConvertkitProvider} from 'contexts/convertkit-context'
 
 declare global {
   interface Window {
@@ -21,11 +22,13 @@ function MyApp({Component, pageProps}: AppProps) {
   return (
     <>
       <DefaultSeo {...config} />
-      <ViewerProvider>
-        <ThemeProvider attribute="class">
-          <Component {...pageProps} />
-        </ThemeProvider>
-      </ViewerProvider>
+      <ConvertkitProvider>
+        <ViewerProvider>
+          <ThemeProvider attribute="class">
+            <Component {...pageProps} />
+          </ThemeProvider>
+        </ViewerProvider>
+      </ConvertkitProvider>
     </>
   )
 }
