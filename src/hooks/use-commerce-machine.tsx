@@ -1,5 +1,5 @@
 import React from 'react'
-import axios from 'axios'
+import axios from 'utils/axios'
 import get from 'lodash/get'
 import noop from 'lodash/noop'
 import pickBy from 'lodash/pickBy'

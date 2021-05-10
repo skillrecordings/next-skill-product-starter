@@ -1,13 +1,11 @@
 import OAuthClient from 'client-oauth2'
 import {track, identify} from './analytics'
-import axios from 'axios'
+import http from 'utils/axios'
 import get from 'lodash/get'
-import cookie from './cookies'
+import cookie from 'utils/cookies'
 import * as serverCookie from 'cookie'
 import getAccessTokenFromCookie from './get-access-token-from-cookie'
 import {CIO_KEY} from '../hooks/use-cio'
-
-const http = axios.create()
 
 export const AUTH_DOMAIN = process.env.NEXT_PUBLIC_AUTH_DOMAIN
 const AUTH_CLIENT_ID = process.env.NEXT_PUBLIC_CLIENT_ID

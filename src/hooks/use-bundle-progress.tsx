@@ -4,10 +4,10 @@ import find from 'lodash/find'
 import {useLocalStorage} from 'react-use'
 import {useViewer} from 'contexts/viewer-context'
 import useSWR from 'swr'
-import Axios from 'axios'
+import axios from 'utils/axios'
 
 const fetcher = (url: string, token: string) => {
-  return Axios.get(
+  return axios.get(
     `${process.env.NEXT_PUBLIC_AUTH_DOMAIN}/api/v1/bundle/${url}/progress_v2?expand=section_resources`,
     {headers: {Authorization: `Bearer ${token}`}},
   )
