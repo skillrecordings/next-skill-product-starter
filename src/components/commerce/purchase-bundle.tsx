@@ -307,7 +307,9 @@ const PurchaseBundle = ({
               name={bundle.title}
               description={bundle.description}
               amount={dollarsToCents(displayPrice)}
-              stripeKey={process.env.NEXT_PUBLIC_STRIPE_TOKEN as string}
+              stripeKey={
+                process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY as string
+              }
               image={bundle.square_cover_480_url}
             >
               <PurchaseButton isProPackage={isProPackage} bundle={bundle}>

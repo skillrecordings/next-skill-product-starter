@@ -10,7 +10,9 @@ import {createMachine, assign} from 'xstate'
 import {SellableResource, Price} from '@types'
 import queryString from 'query-string'
 import {isBrowser} from 'utils/is-browser'
-import {loadStripe} from '@stripe/stripe-js'
+
+// /pure loads stripe on the first call (is someone makes a purchase)
+import {loadStripe} from '@stripe/stripe-js/pure'
 import {useViewer} from 'contexts/viewer-context'
 // TODO: set purchase key
 const PURCHASE_KEY = 'sr_purchase'
@@ -76,6 +78,119 @@ interface CommerceMachineContext {
   purchase?: {sellable: SellableResource}
   stripeCheckoutData?: any
   stripe?: any
+  stripePriceId?: string
+}
+
+// This generates the params based on the presence of `stripePriceId`
+// If its there, then we just need to send the id and quantity
+// if not, then we send the sellable params
+const getStripeCheckoutParams = (machineContext: CommerceMachineContext) => {
+  const {
+    quantity,
+    appliedCoupon,
+    sellable,
+    upgradeFromSellable,
+    bulk,
+    stripePriceId,
+  } = machineContext
+
+  const result = isEmpty(stripePriceId)
+    ? {
+        sellables: [
+          {
+            site: sellable.site,
+            sellable_id: sellable.slug,
+            sellable: sellable.type.toLowerCase(),
+            bulk,
+            quantity,
+            upgrade_from_sellable_id: upgradeFromSellable?.slug,
+            upgrade_from_sellable: upgradeFromSellable?.type,
+          },
+        ],
+        code: appliedCoupon,
+      }
+    : {
+        stripe_price_id: stripePriceId,
+        quantity,
+      }
+
+  return pickBy(result)
+}
+
+// these are loaded from an env file so we know they are there
+// this is the url we use to generate the checkout session
+const stripeCheckoutSessionUrl = process.env
+  .NEXT_PUBLIC_STRIPE_CHECKOUT_SESSIONS_URL!
+// The URL Stripe redirects to after a successful purchase
+const stripeCheckoutSessionSuccessUrl = process.env
+  .NEXT_PUBLIC_STRIPE_CHECKOUT_SESSIONS_SUCCESS_URL!
+// The URL Stripe redirects to after a cancelled purchase
+const stripeCheckoutSessionCancelUrl = process.env
+  .NEXT_PUBLIC_STRIPE_CHECKOUT_SESSIONS_CANCEL_URL!
+// This is the `site` column on the `Sellable`
+const siteName = process.env.NEXT_PUBLIC_SITE_NAME!
+// This is the `Doorkeeper::Application#uid` we use to identify the site with
+const clientId = process.env.NEXT_PUBLIC_CLIENT_ID!
+const stripePublicKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!
+
+// This promise creates a Stripe checkout session
+const checkoutSessionFetcher = (machineContext: CommerceMachineContext) => {
+  const params = {
+    ...getStripeCheckoutParams(machineContext),
+    site: siteName,
+    client_id: clientId,
+    success_url: stripeCheckoutSessionSuccessUrl,
+    cancel_url: stripeCheckoutSessionCancelUrl,
+  }
+
+  console.log(params)
+  return axios.post(stripeCheckoutSessionUrl, params).then(({data}) => data)
+}
+
+// This creates the params to fetch the price from a Sellable or a Stripe Price
+// The sellable price is fetched from egghead's api
+// The Stripe Price is fetched from stripe
+const getPriceParams = (machineContext: CommerceMachineContext) => {
+  const {
+    quantity,
+    appliedCoupon,
+    sellable,
+    upgradeFromSellable,
+    stripePriceId,
+  } = machineContext
+  const {site, id: sellable_id, type} = sellable
+
+  return isEmpty(stripePriceId)
+    ? pickBy({
+        sellables: [
+          {
+            site,
+            sellable_id,
+            upgrade_from_sellable_id: upgradeFromSellable?.slug,
+            upgrade_from_sellable: upgradeFromSellable?.type,
+            sellable: type.toLowerCase(),
+            quantity,
+          },
+        ],
+        site,
+        code: appliedCoupon,
+      })
+    : {id: stripePriceId}
+}
+
+const priceFetcher = (machineContext: CommerceMachineContext) => {
+  const {stripePriceId} = machineContext
+  const params = getPriceParams(machineContext)
+  return isEmpty(stripePriceId)
+    ? axios
+        .post(
+          `${process.env.NEXT_PUBLIC_AUTH_DOMAIN}/api/v1/sellable_purchases/prices`,
+          params,
+        )
+        .then(({data}) => data)
+    : axios
+        .get(`/.netlify/functions/stripe-price`, {params})
+        .then(({data}) => data)
 }
 
 type CommerceEvent =
@@ -117,41 +232,7 @@ const createCommerceMachine = ({
         fetchingPrice: {
           invoke: {
             id: 'fetchPrice',
-            src: (context, event) => {
-              const {
-                quantity,
-                appliedCoupon,
-                sellable,
-                upgradeFromSellable,
-              } = context
-              const {id: sellable_id, type} = sellable
-              if (process.env.NEXT_PUBLIC_AUTH_DOMAIN) {
-                return axios
-                  .post(
-                    `${process.env.NEXT_PUBLIC_AUTH_DOMAIN}/api/v1/sellable_purchases/prices`,
-                    pickBy({
-                      sellables: [
-                        {
-                          site: process.env.NEXT_PUBLIC_SITE_NAME,
-                          sellable_id,
-                          upgrade_from_sellable_id: upgradeFromSellable?.slug,
-                          upgrade_from_sellable: upgradeFromSellable?.type,
-                          sellable: type.toLowerCase(),
-                          quantity,
-                        },
-                      ],
-                      client_id: process.env.NEXT_PUBLIC_CLIENT_ID,
-                      site: process.env.NEXT_PUBLIC_SITE_NAME,
-                      code: appliedCoupon,
-                    }),
-                  )
-                  .then(({data}) => data)
-              } else {
-                return Promise.reject(
-                  'process.env.NEXT_PUBLIC_AUTH_DOMAIN is not configured',
-                )
-              }
-            },
+            src: 'priceFetcher',
             onDone: {
               target: 'checkingPriceData',
               actions: [
@@ -174,27 +255,8 @@ const createCommerceMachine = ({
               cond: 'couponErrorIsPresent',
               actions: ['setErrorFromCoupon'],
             },
-            {target: 'loadStripe', actions: ['checkForDefaultCoupon']},
+            {target: 'priceLoaded', actions: ['checkForDefaultCoupon']},
           ],
-        },
-        loadStripe: {
-          invoke: {
-            id: 'fetchStripe',
-            src: () =>
-              process.env.NEXT_PUBLIC_STRIPE_TOKEN
-                ? loadStripe(process.env.NEXT_PUBLIC_STRIPE_TOKEN)
-                : noop,
-            onDone: {
-              target: 'priceLoaded',
-              actions: assign({
-                stripe: (context, event) => event.data,
-              }),
-            },
-            onError: {
-              target: 'failure',
-              actions: assign({error: (context, event) => event.data}),
-            },
-          },
         },
         priceLoaded: {
           on: {
@@ -237,48 +299,7 @@ const createCommerceMachine = ({
         loadingStripeCheckoutSession: {
           invoke: {
             id: 'createStripeCheckoutSession',
-            src: (context, event) => {
-              const {
-                quantity,
-                appliedCoupon,
-                sellable,
-                upgradeFromSellable,
-                bulk,
-              } = context
-              if (process.env.NEXT_PUBLIC_STRIPE_CHECKOUT_SESSIONS_URL) {
-                return axios
-                  .post(
-                    process.env.NEXT_PUBLIC_STRIPE_CHECKOUT_SESSIONS_URL,
-                    pickBy({
-                      sellables: [
-                        {
-                          site: process.env.NEXT_PUBLIC_SITE_NAME,
-                          sellable_id: sellable.slug,
-                          sellable: sellable.type.toLowerCase(),
-                          bulk,
-                          quantity,
-                          upgrade_from_sellable_id: upgradeFromSellable?.slug,
-                          upgrade_from_sellable: upgradeFromSellable?.type,
-                        },
-                      ],
-                      code: appliedCoupon,
-                      client_id: process.env.NEXT_PUBLIC_CLIENT_ID,
-                      site: process.env.NEXT_PUBLIC_SITE_NAME,
-                      success_url:
-                        process.env
-                          .NEXT_PUBLIC_STRIPE_CHECKOUT_SESSIONS_SUCCESS_URL,
-                      cancel_url:
-                        process.env
-                          .NEXT_PUBLIC_STRIPE_CHECKOUT_SESSIONS_CANCEL_URL,
-                    }),
-                  )
-                  .then(({data}) => data)
-              } else {
-                return Promise.reject(
-                  'process.env.NEXT_PUBLIC_STRIPE_CHECKOUT_SESSIONS_URL is not configured.',
-                )
-              }
-            },
+            src: 'checkoutSessionFetcher',
             onDone: {
               target: 'success',
               actions: [
@@ -394,6 +415,10 @@ const createCommerceMachine = ({
       },
     },
     {
+      services: {
+        priceFetcher,
+        checkoutSessionFetcher,
+      },
       guards: {
         couponErrorIsPresent: (context, event) => {
           return !!context?.price?.coupon_error
@@ -440,11 +465,16 @@ const createCommerceMachine = ({
             })
           }
         },
-        sendToCheckout: (context, event) => {
-          const {stripeCheckoutData, stripe} = context
-          stripe.redirectToCheckout({
-            sessionId: stripeCheckoutData.id,
-          })
+        sendToCheckout: async (context, event) => {
+          console.log(stripePublicKey)
+          const stripe = await loadStripe(stripePublicKey)
+          if (stripe) {
+            const {stripeCheckoutData} = context
+
+            stripe.redirectToCheckout({
+              sessionId: stripeCheckoutData.id,
+            })
+          }
         },
         checkForDefaultCoupon: assign({
           appliedCoupon: (context, event) => {
@@ -504,9 +534,6 @@ export const useCommerceMachine = ({
   const sellableSlug = get(sellable, 'slug')
   const userId = get(viewer, 'id')
   const commerceMachine = React.useMemo(() => {
-    // const purchaseHeaders = isFunction(authToken)
-    //   ? {Authorization: `Bearer ${authToken()}`}
-    //   : {}
     return createCommerceMachine({
       sellable,
       upgradeFromSellable,
