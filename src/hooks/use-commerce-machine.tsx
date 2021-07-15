@@ -214,17 +214,22 @@ type CommerceEvent =
 const commerceMachine = createMachine<CommerceMachineContext, CommerceEvent>(
   {
     id: 'commerceMachine',
+    // first we need to check if coupon is in the header so we can apply it to our price fetch
     initial: 'checkingCoupon',
     context: {
       sellable: null,
       upgradeFromSellable: null,
       bulk: false,
       quantity: 1,
+      stripePriceId: undefined,
     },
     states: {
+      // check the coupon directly into fetching price
       checkingCoupon: {
         always: [{target: 'fetchingPrice', actions: 'checkForCouponInHeader'}],
       },
+      // this will fetch the price from eggheads api or stripe depending on the presence
+      // of stripePriceId
       fetchingPrice: {
         invoke: {
           id: 'fetchPrice',
@@ -235,6 +240,7 @@ const commerceMachine = createMachine<CommerceMachineContext, CommerceEvent>(
               assign({
                 price: (context, event) => event.data[0],
               }),
+              // if `upgradeFromSellable` is present, then we know we need to adjust the displayed price
               'adjustPriceForUpgrade',
             ],
           },
@@ -244,6 +250,7 @@ const commerceMachine = createMachine<CommerceMachineContext, CommerceEvent>(
           },
         },
       },
+      // coupons can error on the price check so we need to set context if this is the case
       checkingPriceData: {
         always: [
           {
@@ -251,13 +258,16 @@ const commerceMachine = createMachine<CommerceMachineContext, CommerceEvent>(
             cond: 'couponErrorIsPresent',
             actions: ['setErrorFromCoupon'],
           },
+          // check for default coupon will apply the coupon if its present
+          // this is used for site wide sales
           {target: 'priceLoaded', actions: ['checkForDefaultCoupon']},
         ],
       },
       priceLoaded: {
         on: {
+          // we use this action to apply PPP coupons
           APPLY_COUPON: {
-            target: 'fetchingPrice',
+            target: 'checkingCoupon',
             actions: [
               assign({
                 appliedCoupon: (context, event) => event.appliedCoupon,
@@ -278,9 +288,12 @@ const commerceMachine = createMachine<CommerceMachineContext, CommerceEvent>(
               'clearAppliedCoupon',
             ],
           },
+          // this transition is used for the old stripe checkout
+          // we send this when the modal is open
           START_PURCHASE: {
             target: 'stripePurchase',
           },
+          // when theres no stripePriceId and the price of the sellable comes back as $0, we can claim the sellable on the client
           CLAIM_COUPON: {
             target: 'handlePurchase',
             actions: [
@@ -289,6 +302,7 @@ const commerceMachine = createMachine<CommerceMachineContext, CommerceEvent>(
               }),
             ],
           },
+          // This transition will kick of the stripe checkout flow
           START_STRIPE_CHECKOUT: {target: 'loadingStripeCheckoutSession'},
         },
       },
@@ -320,9 +334,11 @@ const commerceMachine = createMachine<CommerceMachineContext, CommerceEvent>(
       },
       stripePurchase: {
         on: {
+          // this action is fired when the stripe modal is closed by the user
           CANCEL_PURCHASE: {
             target: 'priceLoaded',
           },
+          // this will fire when the user confirms a purchase with their info
           HANDLE_PURCHASE: {
             target: 'handlePurchase',
             actions: [
@@ -334,7 +350,8 @@ const commerceMachine = createMachine<CommerceMachineContext, CommerceEvent>(
           },
         },
       },
-      // add upgrading state
+      // this is the old way to purchase sellables
+      // these states could likely be cut out entirely
       handlePurchase: {
         invoke: {
           id: 'handlePurchase',
@@ -403,6 +420,7 @@ const commerceMachine = createMachine<CommerceMachineContext, CommerceEvent>(
       success: {},
       failure: {
         on: {
+          // This can probably be delete
           START_PURCHASE: {
             target: 'stripePurchase',
             actions: ['clearError'],
