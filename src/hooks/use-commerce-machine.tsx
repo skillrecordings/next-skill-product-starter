@@ -188,9 +188,7 @@ const priceFetcher = (machineContext: CommerceMachineContext) => {
           params,
         )
         .then(({data}) => data)
-    : axios
-        .get(`/.netlify/functions/stripe-price`, {params})
-        .then(({data}) => data)
+    : axios.get(`/api/stripe/prices`, {params}).then(({data}) => data)
 }
 
 type CommerceEvent =
@@ -222,6 +220,7 @@ const createCommerceMachine = ({
         upgradeFromSellable,
         bulk: false,
         quantity: 1,
+        stripePriceId: 'price_1JDaOUFcYvVM6eTtLOOm8Diu',
       },
       states: {
         checkingCoupon: {
@@ -530,15 +529,13 @@ export const useCommerceMachine = ({
   sellable,
   upgradeFromSellable,
 }: UseCommerceMachineProps) => {
-  const {authToken, viewer} = useViewer()
   const sellableSlug = get(sellable, 'slug')
-  const userId = get(viewer, 'id')
   const commerceMachine = React.useMemo(() => {
     return createCommerceMachine({
       sellable,
       upgradeFromSellable,
     })
-  }, [sellableSlug, userId, sellable, upgradeFromSellable])
+  }, [sellableSlug, upgradeFromSellable])
 
   return useMachine(commerceMachine)
 }

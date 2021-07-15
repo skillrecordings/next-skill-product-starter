@@ -1,15 +1,7 @@
 import Stripe from 'stripe'
-
-// if (!process.env.STRIPE_SECRET_TOKEN) {
-//   throw new Error('STRIPE_SECRET_TOKEN not found')
-// }
-
-// const stripe = new Stripe(process.env.STRIPE_SECRET_TOKEN, {
-//   apiVersion: '2020-08-27',
-// })
-
 const STRIPE_SECRET = process.env.STRIPE_SECRET_TOKEN
 
+const noopRetrieve = {retrieve: () => {}}
 const stripe = () =>
   STRIPE_SECRET
     ? new Stripe(STRIPE_SECRET, {
@@ -17,7 +9,12 @@ const stripe = () =>
       })
     : (() => {
         console.error('STRIPE_SECRET_TOKEN not found')
-        return {checkout: {sessions: {retrieve: () => {}}}}
+        return {
+          checkout: {
+            sessions: noopRetrieve,
+          },
+          prices: noopRetrieve,
+        }
       })()
 
 export const fetchStripeCheckoutSession = async (id: string) => {
@@ -25,3 +22,6 @@ export const fetchStripeCheckoutSession = async (id: string) => {
     expand: ['customer'],
   })
 }
+
+export const fetchStripePrice = (id: string) =>
+  stripe().prices.retrieve(id, {expand: ['product']})
