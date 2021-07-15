@@ -1,11 +1,11 @@
-import axios from 'utils/axios'
+import axios from '../../utils/axios'
 import get from 'lodash/get'
 import pickBy from 'lodash/pickBy'
 import isEmpty from 'lodash/isEmpty'
 import isPast from 'date-fns/isPast'
 import {createMachine, assign} from 'xstate'
 import queryString from 'query-string'
-import {isBrowser} from 'utils/is-browser'
+import {isBrowser} from '../../utils/is-browser'
 // /pure loads stripe on the first call (is someone makes a purchase)
 import {loadStripe} from '@stripe/stripe-js/pure'
 import {

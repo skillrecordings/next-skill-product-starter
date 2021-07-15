@@ -1,4 +1,4 @@
-import axios from 'utils/axios'
+import axios from '../../utils/axios'
 import pickBy from 'lodash/pickBy'
 import isEmpty from 'lodash/isEmpty'
 import {SellableResource, Price} from '@types'
@@ -57,7 +57,7 @@ export const getStripeCheckoutParams = (
   const result = isEmpty(stripePriceId)
     ? {
         sellables: [
-          {
+          pickBy({
             site: sellable.site,
             sellable_id: sellable.slug,
             sellable: sellable.type.toLowerCase(),
@@ -65,7 +65,7 @@ export const getStripeCheckoutParams = (
             quantity,
             upgrade_from_sellable_id: upgradeFromSellable?.slug,
             upgrade_from_sellable: upgradeFromSellable?.type,
-          },
+          }),
         ],
         code: appliedCoupon,
       }
@@ -127,14 +127,14 @@ export const getPriceParams = (machineContext: CommerceMachineContext) => {
   return isEmpty(stripePriceId)
     ? pickBy({
         sellables: [
-          {
+          pickBy({
             site,
             sellable_id,
             upgrade_from_sellable_id: upgradeFromSellable?.slug,
             upgrade_from_sellable: upgradeFromSellable?.type,
             sellable: type.toLowerCase(),
             quantity,
-          },
+          }),
         ],
         site,
         code: appliedCoupon,
