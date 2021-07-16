@@ -6,6 +6,8 @@ import {
   priceFetcher,
   eggheadPriceCheckUrl,
   stripePriceCheckUrl,
+  stripeCheckoutSessionUrl,
+  checkoutSessionFetcher,
 } from '../utils'
 
 const getContext = (options: any = {}) => {
@@ -21,18 +23,18 @@ const getContext = (options: any = {}) => {
 }
 
 describe('getPriceParams', () => {
-  test('returns the stripe price id as {id}', () => {
+  it('returns the stripe price id as {id}', () => {
     const machineContext = getContext({stripePriceId: 'abc123', sellable: {}})
     const params = getPriceParams(machineContext)
     expect(params).toStrictEqual({id: 'abc123'})
   })
 
-  test('errors when sellable is null', () => {
+  it('errors when sellable is null', () => {
     const machineContext = getContext()
     expect(() => getPriceParams(machineContext)).toThrow()
   })
 
-  test('returns sellable params', () => {
+  it('returns sellable params', () => {
     const contextOverride = {
       quantity: 1,
       sellable: {id: 'abc123', type: 'type', site: 'site'},
@@ -52,7 +54,7 @@ describe('getPriceParams', () => {
     })
   })
 
-  test('returns sellable params with applied coupon', () => {
+  it('returns sellable params with applied coupon', () => {
     const contextOverride = {
       quantity: 1,
       sellable: {id: 'abc123', type: 'type', site: 'site'},
@@ -74,7 +76,7 @@ describe('getPriceParams', () => {
     })
   })
 
-  test('returns sellable params with an upgradeFromSellable', () => {
+  it('returns sellable params with an upgradeFromSellable', () => {
     const contextOverride = {
       quantity: 1,
       sellable: {id: 'abc123', type: 'type', site: 'site'},
@@ -102,18 +104,18 @@ describe('getPriceParams', () => {
 })
 
 describe('getStripeCheckoutParams', () => {
-  test('returns the stripe price id as {stripe_price_id}', () => {
+  it('returns the stripe price id as {stripe_price_id}', () => {
     const machineContext = getContext({stripePriceId: 'abc123', sellable: {}})
     const params = getStripeCheckoutParams(machineContext)
     expect(params).toStrictEqual({stripe_price_id: 'abc123', quantity: 1})
   })
 
-  test('errors when sellable is null', () => {
+  it('errors when sellable is null', () => {
     const machineContext = getContext()
     expect(() => getStripeCheckoutParams(machineContext)).toThrow()
   })
 
-  test('returns sellable params', () => {
+  it('returns sellable params', () => {
     const contextOverride = {
       quantity: 1,
       sellable: {slug: 'abc123', type: 'type', site: 'site'},
@@ -132,7 +134,7 @@ describe('getStripeCheckoutParams', () => {
     })
   })
 
-  test('returns sellable params with applied coupon', () => {
+  it('returns sellable params with applied coupon', () => {
     const contextOverride = {
       quantity: 1,
       sellable: {slug: 'abc123', type: 'type', site: 'site'},
@@ -153,7 +155,7 @@ describe('getStripeCheckoutParams', () => {
     })
   })
 
-  test('returns sellable params with an upgradeFromSellable', () => {
+  it('returns sellable params with an upgradeFromSellable', () => {
     const contextOverride = {
       quantity: 1,
       sellable: {slug: 'abc123', type: 'type', site: 'site'},
@@ -178,7 +180,7 @@ describe('getStripeCheckoutParams', () => {
     })
   })
 
-  test('returns sellable params with bulk purchase', () => {
+  it('returns sellable params with bulk purchase', () => {
     const contextOverride = {
       quantity: 2,
       bulk: true,
@@ -218,14 +220,14 @@ describe('priceFetcher', () => {
 
   beforeAll(() => server.listen())
   afterAll(() => server.close())
-  test('it sends stripe price id request to serverless endpoint', async () => {
+  it('sends stripe price id request to serverless endpoint', async () => {
     const machineContext = getContext({stripePriceId: 'abc123', sellable: {}})
     const priceResult = await priceFetcher(machineContext)
 
     expect(priceResult.stripeCalled).toEqual(true)
   })
 
-  test('it sends sellable price request to egghead endpoint', async () => {
+  it('sends sellable price request to egghead endpoint', async () => {
     const contextOverride = {
       quantity: 1,
       sellable: {id: 'abc123', type: 'type', site: 'site'},
@@ -234,5 +236,34 @@ describe('priceFetcher', () => {
     const priceResult = await priceFetcher(machineContext)
 
     expect(priceResult.egghead).toEqual(true)
+  })
+})
+describe('checkoutSessionFetcher', () => {
+  console.log(stripeCheckoutSessionUrl)
+  const server = setupServer(
+    rest.post(stripeCheckoutSessionUrl, (req, res, ctx) => {
+      return res(ctx.json({stripeCalled: true}))
+    }),
+  )
+
+  beforeAll(() => server.listen())
+  afterAll(() => server.close())
+  it('sends a request with stripePriceId', async () => {
+    const machineContext = getContext({stripePriceId: 'abc123', sellable: {}})
+    const priceResult = await checkoutSessionFetcher(machineContext)
+
+    expect(priceResult.stripeCalled).toEqual(true)
+  })
+
+  it('sends a request with sellable params', async () => {
+    const contextOverride = {
+      quantity: 1,
+      sellable: {id: 'abc123', type: 'type', site: 'site'},
+      appliedCoupon: 'coupon',
+    }
+    const machineContext = getContext(contextOverride)
+    const priceResult = await checkoutSessionFetcher(machineContext)
+
+    expect(priceResult.stripeCalled).toEqual(true)
   })
 })

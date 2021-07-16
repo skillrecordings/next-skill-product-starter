@@ -79,7 +79,7 @@ export const getStripeCheckoutParams = (
 
 // these are loaded from an env file so we know they are there
 // this is the url we use to generate the checkout session
-const stripeCheckoutSessionUrl = process.env
+export const stripeCheckoutSessionUrl = process.env
   .NEXT_PUBLIC_STRIPE_CHECKOUT_SESSIONS_URL!
 // The URL Stripe redirects to after a successful purchase
 const stripeCheckoutSessionSuccessUrl = process.env
