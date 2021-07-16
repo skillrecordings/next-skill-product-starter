@@ -4,8 +4,6 @@ import pickBy from 'lodash/pickBy'
 import isEmpty from 'lodash/isEmpty'
 import isPast from 'date-fns/isPast'
 import {createMachine, assign} from 'xstate'
-import queryString from 'query-string'
-import {isBrowser} from '../../utils/is-browser'
 // /pure loads stripe on the first call (is someone makes a purchase)
 import {loadStripe} from '@stripe/stripe-js/pure'
 import {
@@ -328,9 +326,8 @@ const commerceMachine = createMachine<CommerceMachineContext, CommerceEvent>(
       checkForCouponInHeader: assign({
         appliedCoupon: (context, event) => {
           try {
-            const searchQuery =
-              isBrowser() && queryString.parse(window.location.search)
-            return get(searchQuery, 'coupon')
+            const searchQuery = new URLSearchParams(window.location.search)
+            return searchQuery.get('coupon')
           } catch (e) {
             console.error({e})
             return null
