@@ -1,4 +1,4 @@
-import axios from '../../utils/axios'
+import axios from 'utils/axios'
 import pickBy from 'lodash/pickBy'
 import isEmpty from 'lodash/isEmpty'
 import {SellableResource, Price} from '@types'
@@ -142,17 +142,16 @@ export const getPriceParams = (machineContext: CommerceMachineContext) => {
     : {id: stripePriceId}
 }
 
+export const eggheadPriceCheckUrl = `${process.env.NEXT_PUBLIC_AUTH_DOMAIN}/api/v1/sellable_purchases/prices`
+export const stripePriceCheckUrl = `/api/stripe/prices`
+
 export const priceFetcher = (machineContext: CommerceMachineContext) => {
   const {stripePriceId} = machineContext
   const params = getPriceParams(machineContext)
+
   return isEmpty(stripePriceId)
-    ? axios
-        .post(
-          `${process.env.NEXT_PUBLIC_AUTH_DOMAIN}/api/v1/sellable_purchases/prices`,
-          params,
-        )
-        .then(({data}) => data)
-    : axios.get(`/api/stripe/prices`, {params}).then(({data}) => data)
+    ? axios.post(eggheadPriceCheckUrl, params).then(({data}) => data)
+    : axios.get(stripePriceCheckUrl, {params}).then(({data}) => data)
 }
 
 // TODO: set purchase key

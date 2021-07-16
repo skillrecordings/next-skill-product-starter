@@ -1,4 +1,12 @@
-import {getPriceParams, getStripeCheckoutParams} from '../utils'
+import {rest} from 'msw'
+import {setupServer} from 'msw/node'
+import {
+  getPriceParams,
+  getStripeCheckoutParams,
+  priceFetcher,
+  eggheadPriceCheckUrl,
+  stripePriceCheckUrl,
+} from '../utils'
 
 const getContext = (options: any = {}) => {
   const defaultContext = {
@@ -195,5 +203,36 @@ describe('getStripeCheckoutParams', () => {
         },
       ],
     })
+  })
+})
+
+describe('priceFetcher', () => {
+  const server = setupServer(
+    rest.get(stripePriceCheckUrl, (req, res, ctx) => {
+      return res(ctx.json({stripeCalled: true}))
+    }),
+    rest.post(eggheadPriceCheckUrl, (req, res, ctx) => {
+      return res(ctx.json({egghead: true}))
+    }),
+  )
+
+  beforeAll(() => server.listen())
+  afterAll(() => server.close())
+  test('it sends stripe price id request to serverless endpoint', async () => {
+    const machineContext = getContext({stripePriceId: 'abc123', sellable: {}})
+    const priceResult = await priceFetcher(machineContext)
+
+    expect(priceResult.stripeCalled).toEqual(true)
+  })
+
+  test('it sends sellable price request to egghead endpoint', async () => {
+    const contextOverride = {
+      quantity: 1,
+      sellable: {id: 'abc123', type: 'type', site: 'site'},
+    }
+    const machineContext = getContext(contextOverride)
+    const priceResult = await priceFetcher(machineContext)
+
+    expect(priceResult.egghead).toEqual(true)
   })
 })
