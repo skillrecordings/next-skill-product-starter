@@ -4,128 +4,27 @@ import {identify} from 'utils/analytics'
 import isEmpty from 'lodash/isEmpty'
 import isEqual from 'lodash/isEqual'
 import get from 'lodash/get'
-import filter from 'lodash/filter'
-import reduce from 'lodash/reduce'
 import queryString from 'query-string'
 import {isBrowser} from 'utils/is-browser'
-import getDevAccessToken from 'utils/get-dev-access-token'
-import {SellableResource, Viewer} from '@types'
+import {
+  ViewerContext,
+  ViewerEvent,
+  ViewerState,
+  fetchViewer,
+  getAccessToken,
+  getIsUnclaimedBulkPurchaser,
+  getCanViewContent,
+} from './utils'
 
-const auth = new Auth()
+export const auth = new Auth()
 
-interface GetAccessTokenArgs {
-  access_token?: string
-}
-const getAccessToken = (options: GetAccessTokenArgs) => {
-  const devAccessToken = getDevAccessToken()
-
-  return devAccessToken ?? get(options, 'access_token')
-}
-
-interface FetchViewerArgs {
-  accessToken?: string
-  viewAsUser?: string | null
-  refreshViewer?: boolean
-}
-
-async function fetchViewer({
-  accessToken,
-  viewAsUser,
-  refreshViewer,
-}: FetchViewerArgs): Promise<Viewer> {
-  if (!isBrowser()) {
-    return Promise.reject('localstorage not available')
-  }
-
-  const devAccessToken = getDevAccessToken()
-
-  if (devAccessToken) {
-    return await auth.setSession(devAccessToken)
-  }
-
-  if (viewAsUser && accessToken) {
-    return await auth.becomeUser(viewAsUser, accessToken)
-  } else if (window.location.pathname === '/redirect') {
-    return await auth.handleAuthentication()
-  } else if (refreshViewer) {
-    return await auth.refreshUser()
-  }
-
-  return auth.getLocalUser()
-}
-
-const getSitePurchases = (viewer: Viewer) =>
-  filter(get(viewer, 'purchased', []), {
-    site: process.env.NEXT_PUBLIC_SITE_NAME,
-  })
-
-const getCanViewContent = (sitePurchases: SellableResource[]) => {
-  return reduce(
-    sitePurchases,
-    (canViewContent, currentPurchase) => {
-      if (canViewContent) {
-        return canViewContent
-      }
-
-      return currentPurchase?.bulk === false
-    },
-    false,
-  )
-}
-
-const getIsUnclaimedBulkPurchaser = (viewer: Viewer) => {
-  const sitePurchases = getSitePurchases(viewer)
-  const canViewContent = getCanViewContent(sitePurchases)
-  return !canViewContent && sitePurchases.length > 0
-}
-
-type ViewerContext = {
-  viewer?: Viewer | null
-  viewAsUser?: string | null
-  error?: string | null
-}
-
-export type ViewerEvent =
-  | {type: 'REPORT_IS_LOGGED_IN'; viewer: Viewer; viewAsUser: string}
-  | {type: 'REPORT_IS_LOGGED_OUT'}
-  | {type: 'LOG_IN'; viewer: Viewer}
-  | {type: 'LOG_OUT'}
-  | {type: 'REFRESH_VIEWER'}
-  | {type: 'REPORT_REFRESHED_VIEWER'; viewer: Viewer}
-
-type ViewerState =
-  | {
-      value: 'checkingIfLoggedIn'
-      context: ViewerContext & {
-        viewer: undefined
-        viewAsUser: undefined
-        error: undefined
-      }
-    }
-  | {
-      value: 'loggedIn'
-      context: ViewerContext & {
-        viewer: Viewer
-        viewAsUser: string | undefined
-        error: undefined
-      }
-    }
-  | {
-      value: 'loggedOut'
-      context: ViewerContext & {
-        viewer: undefined
-        viewAsUser: undefined
-        error: string | undefined
-      }
-    }
-
-export const authenticationMachine = createMachine<
+export const viewerMachine = createMachine<
   ViewerContext,
   ViewerEvent,
   ViewerState
 >(
   {
-    id: 'authentication',
+    id: 'viewerAuthentication',
     initial: 'checkingIfLoggedIn',
     context: {
       viewer: undefined,
@@ -288,4 +187,4 @@ export const authenticationMachine = createMachine<
   },
 )
 
-export default authenticationMachine
+export default viewerMachine
