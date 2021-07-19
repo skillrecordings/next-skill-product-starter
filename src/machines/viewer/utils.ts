@@ -9,10 +9,9 @@ import {auth} from './index'
 interface GetAccessTokenArgs {
   access_token?: string
 }
-export const getAccessToken = (options: GetAccessTokenArgs) => {
+export const getAccessToken = (options?: GetAccessTokenArgs) => {
   const devAccessToken = getDevAccessToken()
-
-  return devAccessToken ?? get(options, 'access_token')
+  return devAccessToken || options?.access_token
 }
 interface FetchViewerArgs {
   accessToken?: string
