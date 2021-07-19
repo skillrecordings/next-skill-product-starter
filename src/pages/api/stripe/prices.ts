@@ -17,9 +17,9 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
     }
 
     const price = await fetchStripePrice(id)
-    const unitAmount = price?.unit_amount ?? 0
+    const unitAmount = price && price.unit_amount
     // we calculate priceInDollars because the sellable_purchase#prices end point sends back dollars
-    const priceInDollars = Math.ceil(unitAmount / 100)
+    const priceInDollars = Math.ceil(unitAmount || 0 / 100)
 
     // we have to send back an array to match sellable_purchases#prices endpoint
     res.status(200).json([
