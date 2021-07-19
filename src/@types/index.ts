@@ -24,6 +24,7 @@ export type SellableResource = Resource & {
   price: number
   full_price: number
   site?: string
+  bulk: boolean
   available_upgrades?: AvailableUpgrade[]
 }
 
