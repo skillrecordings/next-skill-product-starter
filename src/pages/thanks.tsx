@@ -9,7 +9,7 @@ import {useViewer} from 'contexts/viewer-context'
 const ThanksPage = ({displayEmail}: any) => {
   const {refreshViewer} = useViewer()
   React.useEffect(() => {
-    refreshViewer()
+    refreshViewer?.()
   }, [])
 
   const emailText =
