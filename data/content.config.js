@@ -4,7 +4,7 @@ const isEmpty = require('lodash/isEmpty')
 const compact = require('lodash/compact')
 
 require('dotenv').config({
-  path: `.env.development`,
+  path: `.env.local`,
 })
 
 module.exports = [
