@@ -1,9 +1,9 @@
 ## Start developing
 
-Copy the template `.env.template` file to `.env.development` and `.env.production`.
+Copy the template `.env.template` file to `.env.local` and `.env.production`.
 
 ```shell
-cp .env.template .env.development
+cp .env.template .env.local
 cp .env.template .env.production
 ```
 
@@ -22,7 +22,7 @@ In the root of the directory, there is a `/data` folder. This is where the cache
 
 The first think you need to do is fill out `/data/content.config.js`. This file indicates what bundles this site is selling. There is currently 2 expected bundles: a pro tier and a book tier. This can be adjusted to the specific site needs.
 
-You can add `NEXT_PUBLIC_PRO_SLUG` and `NEXT_PUBLIC_BOOK_SLUG` to your `.env.development` and `.env.production` if these are the two tiers you are selling with the site.
+You can add `NEXT_PUBLIC_PRO_SLUG` and `NEXT_PUBLIC_BOOK_SLUG` to your `.env.local` and `.env.production` if these are the two tiers you are selling with the site.
 
 To load development data from the rails api, make sure you rails db is set up and run `yarn build:data:dev`. You will need to create a local `BUNDLE_BUDDY_TOKEN` (See below for details).
 
