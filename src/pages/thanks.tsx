@@ -4,8 +4,14 @@ import config from '../../config.json'
 import get from 'lodash/get'
 import Markdown from 'react-markdown'
 import {fetchStripeCheckoutSession} from 'utils/stripe'
+import {useViewer} from 'contexts/viewer-context'
 
 const ThanksPage = ({displayEmail}: any) => {
+  const {refreshViewer} = useViewer()
+  React.useEffect(() => {
+    refreshViewer()
+  }, [])
+
   const emailText =
     displayEmail && displayEmail !== 'undefined' ? `**${displayEmail}**` : ''
   const instructionText = `# Thank you for purchasing ${

@@ -17,14 +17,13 @@ type ViewerContextType = {
   viewer?: any
   requestSignInEmail?: any
   logout?: any
-  refreshUser?: any
   viewAsEmail?: any
   upgradeToSellable?: any
   upgradeFromSellable?: any
   isAuthenticated?: any
-  setSession?: any
   sitePurchases?: any
   isUnclaimedBulkPurchaser?: boolean
+  refreshViewer?: () => void
 }
 
 const defaultViewerContext: ViewerContextType = {
@@ -94,6 +93,11 @@ function useAuthedViewer() {
       upgradeFromSellable,
       upgradeToSellable,
       isUnclaimedBulkPurchaser,
+      refreshViewer: () => {
+        if (machineState.matches('loggedIn')) {
+          send('REFRESH_VIEWER')
+        }
+      },
     }),
     [viewer?.id, viewerState],
   )

@@ -69,7 +69,11 @@ export type ViewerEvent =
   | {type: 'LOG_OUT'}
   | {type: 'REQUEST_LOGIN'; email: string}
   | {type: 'REFRESH_VIEWER'}
-  | {type: 'REPORT_REFRESHED_VIEWER'; viewer: Viewer}
+  | {
+      type: 'REPORT_REFRESHED_VIEWER'
+      viewer: Viewer
+      viewAsUser?: string | null
+    }
 
 export type ViewerState =
   | {

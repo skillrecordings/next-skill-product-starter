@@ -179,6 +179,7 @@ export const viewerMachine = createMachine<
         }
         return {
           viewer: event.viewer,
+          viewAsUser: event.viewAsUser,
         }
       }),
       clearViewerFromContext: assign((_context, _event) => ({
