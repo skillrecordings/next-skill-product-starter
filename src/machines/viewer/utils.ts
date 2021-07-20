@@ -68,10 +68,11 @@ export type ViewerContext = {
 }
 
 export type ViewerEvent =
-  | {type: 'REPORT_IS_LOGGED_IN'; viewer: Viewer; viewAsUser: string}
+  | {type: 'REPORT_IS_LOGGED_IN'; viewer: Viewer; viewAsUser: string | null}
   | {type: 'REPORT_IS_LOGGED_OUT'}
   | {type: 'LOG_IN'; viewer: Viewer}
   | {type: 'LOG_OUT'}
+  | {type: 'REQUEST_LOGIN'; email: string}
   | {type: 'REFRESH_VIEWER'}
   | {type: 'REPORT_REFRESHED_VIEWER'; viewer: Viewer}
 

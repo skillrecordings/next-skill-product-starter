@@ -13,6 +13,7 @@ import {
   getAccessToken,
   getIsUnclaimedBulkPurchaser,
   getCanViewContent,
+  auth,
 } from './utils'
 
 export const viewerMachine = createMachine<
@@ -81,6 +82,9 @@ export const viewerMachine = createMachine<
             target: 'loggedIn',
             actions: 'assignViewerToContext',
           },
+          REQUEST_LOGIN: {
+            actions: 'sendLoginRequest',
+          },
         },
       },
     },
@@ -121,14 +125,13 @@ export const viewerMachine = createMachine<
             accessToken,
             viewAsUser,
           })
+          if (isEmpty(newViewer)) return send({type: 'REPORT_IS_LOGGED_OUT'})
 
-          if (isEmpty(newViewer)) return {type: 'REPORT_IS_LOGGED_OUT'}
-
-          return {
+          return send({
             type: 'REPORT_IS_LOGGED_IN',
             viewer: newViewer,
             viewAsUser,
-          }
+          })
         } catch (e) {
           console.error({e})
           return null
@@ -136,6 +139,12 @@ export const viewerMachine = createMachine<
       },
     },
     actions: {
+      sendLoginRequest: (_context, event) => {
+        console.log(event)
+        if (event.type === 'REQUEST_LOGIN') {
+          auth.requestSignInEmail(event.email)
+        }
+      },
       identify: (context) => {
         if (context.viewer) identify(context.viewer)
       },
