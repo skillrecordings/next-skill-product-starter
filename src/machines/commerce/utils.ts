@@ -128,7 +128,6 @@ export const getPriceParams = (machineContext: CommerceMachineContext) => {
     ? pickBy({
         sellables: [
           pickBy({
-            site,
             sellable_id,
             upgrade_from_sellable_id: upgradeFromSellable?.slug,
             upgrade_from_sellable: upgradeFromSellable?.type,
@@ -136,7 +135,7 @@ export const getPriceParams = (machineContext: CommerceMachineContext) => {
             quantity,
           }),
         ],
-        site,
+        site: process.env.NEXT_PUBLIC_SITE_NAME,
         code: appliedCoupon,
       })
     : {id: stripePriceId}
