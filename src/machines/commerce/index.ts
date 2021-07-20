@@ -326,6 +326,9 @@ const commerceMachine = createMachine<CommerceMachineContext, CommerceEvent>(
       }),
       checkForCouponInHeader: assign({
         appliedCoupon: (context, event) => {
+          if (typeof window === 'undefined') {
+            return null
+          }
           try {
             const searchQuery = new URLSearchParams(window.location.search)
             return searchQuery.get('coupon')

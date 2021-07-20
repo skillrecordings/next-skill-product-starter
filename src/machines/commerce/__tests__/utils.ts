@@ -236,7 +236,6 @@ describe('priceFetcher', () => {
   })
 })
 describe('checkoutSessionFetcher', () => {
-  console.log(stripeCheckoutSessionUrl)
   const server = setupServer(
     rest.post(stripeCheckoutSessionUrl, (req, res, ctx) => {
       return res(ctx.json({stripeCalled: true}))
