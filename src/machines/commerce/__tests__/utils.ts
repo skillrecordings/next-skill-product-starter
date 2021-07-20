@@ -47,17 +47,16 @@ describe('getPriceParams', () => {
           quantity: contextOverride.quantity,
           sellable: contextOverride.sellable.type,
           sellable_id: contextOverride.sellable.id,
-          site: contextOverride.sellable.site,
         },
       ],
-      site: contextOverride.sellable.site,
+      site: process.env.NEXT_PUBLIC_SITE_NAME,
     })
   })
 
   it('returns sellable params with applied coupon', () => {
     const contextOverride = {
       quantity: 1,
-      sellable: {id: 'abc123', type: 'type', site: 'site'},
+      sellable: {id: 'abc123', type: 'type'},
       appliedCoupon: 'coupon',
     }
     const machineContext = getContext(contextOverride)
@@ -68,10 +67,9 @@ describe('getPriceParams', () => {
           quantity: contextOverride.quantity,
           sellable: contextOverride.sellable.type,
           sellable_id: contextOverride.sellable.id,
-          site: contextOverride.sellable.site,
         },
       ],
-      site: contextOverride.sellable.site,
+      site: process.env.NEXT_PUBLIC_SITE_NAME,
       code: contextOverride.appliedCoupon,
     })
   })
@@ -79,7 +77,7 @@ describe('getPriceParams', () => {
   it('returns sellable params with an upgradeFromSellable', () => {
     const contextOverride = {
       quantity: 1,
-      sellable: {id: 'abc123', type: 'type', site: 'site'},
+      sellable: {id: 'abc123', type: 'type'},
       upgradeFromSellable: {
         slug: 'upgrade',
         type: 'type',
@@ -93,12 +91,11 @@ describe('getPriceParams', () => {
           quantity: contextOverride.quantity,
           sellable: contextOverride.sellable.type,
           sellable_id: contextOverride.sellable.id,
-          site: contextOverride.sellable.site,
           upgrade_from_sellable_id: contextOverride.upgradeFromSellable.slug,
           upgrade_from_sellable: contextOverride.upgradeFromSellable.type,
         },
       ],
-      site: contextOverride.sellable.site,
+      site: process.env.NEXT_PUBLIC_SITE_NAME,
     })
   })
 })
