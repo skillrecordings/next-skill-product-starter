@@ -156,10 +156,11 @@ export const viewerMachine = createMachine<
             if (window.location.pathname !== '/redirect') {
               return
             }
+            // TODO: set these paths
             if (getIsUnclaimedBulkPurchaser(context.viewer)) {
               window.location.replace('/invoice')
-            } else if (getCanViewContent(context.viewer.purchases)) {
-              window.location.replace('/learn')
+            } else if (getCanViewContent(context.viewer.purchased)) {
+              window.location.replace('/')
             }
             return
           }

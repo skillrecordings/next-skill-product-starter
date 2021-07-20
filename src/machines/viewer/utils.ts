@@ -46,13 +46,8 @@ const getSitePurchases = (viewer: Viewer) =>
 export const getCanViewContent = (sitePurchases: SellableResource[]) => {
   return reduce(
     sitePurchases,
-    (canViewContent, currentPurchase) => {
-      if (canViewContent) {
-        return canViewContent
-      }
-
-      return currentPurchase?.bulk === false
-    },
+    (canViewContent, currentPurchase) =>
+      canViewContent || currentPurchase?.bulk === false,
     false,
   )
 }
