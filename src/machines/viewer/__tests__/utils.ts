@@ -2,7 +2,6 @@ import {getAccessToken} from '../utils'
 
 describe('getAccessToken', () => {
   it('uses the developer access token when set', () => {
-    console.log(process.env.NEXT_PUBLIC_DEV_USER_TOKEN)
     process.env = Object.assign(process.env, {
       NEXT_PUBLIC_DEV_USER_TOKEN: 'the-token',
     })
