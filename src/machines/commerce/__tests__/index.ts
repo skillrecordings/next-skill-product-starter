@@ -50,17 +50,17 @@ it('transitions immediately to fetching price', () => {
 })
 
 it('applies a coupon from the coupon search param', (done) => {
+  const expectedCoupon = 'abc123'
   Reflect.deleteProperty(window, 'location')
   window.location = {
     ...realLocation,
-    href: 'https://www.example.com?coupon=abc123',
-    search: '?coupon=abc123',
+    search: `?coupon=${expectedCoupon}`,
   }
   const service = interpret(commerceMachine.withContext(defaultContext))
 
   service.onTransition((state) => {
     if (state.matches('fetchingPrice')) {
-      expect(state.context.appliedCoupon).toBe('abc123')
+      expect(state.context.appliedCoupon).toBe(expectedCoupon)
       done()
     }
   })
@@ -94,6 +94,7 @@ it('starts stripe checkout on event', (done) => {
   )
 
   service.onTransition((state) => {
+    // We are testing that this action successfully redirects the viewer to stripe
     if (service.state.matches('priceLoaded'))
       service.send({type: 'START_STRIPE_CHECKOUT'})
 
