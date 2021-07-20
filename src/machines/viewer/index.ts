@@ -140,7 +140,6 @@ export const viewerMachine = createMachine<
     },
     actions: {
       sendLoginRequest: (_context, event) => {
-        console.log(event)
         if (event.type === 'REQUEST_LOGIN') {
           auth.requestSignInEmail(event.email)
         }
