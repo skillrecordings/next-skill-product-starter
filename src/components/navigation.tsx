@@ -5,7 +5,7 @@ import Link from 'next/link'
 import {useViewer} from 'contexts/viewer-context'
 
 const Navigation = () => {
-  const {viewer, isAuthenticated, logout} = useViewer()
+  const {isAuthenticated, logout} = useViewer()
   return (
     <nav className="w-full flex items-center justify-between print:hidden">
       <Link href="/">
@@ -14,7 +14,7 @@ const Navigation = () => {
         </a>
       </Link>
       <div className="flex space-x-3 items-center">
-        {isAuthenticated() && <button onClick={logout}>log out</button>}
+        {isAuthenticated && <button onClick={logout}>log out</button>}
         <DarkModeToggle />
       </div>
     </nav>
