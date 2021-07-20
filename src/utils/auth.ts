@@ -60,6 +60,7 @@ export default class Auth {
     this.refreshUser = this.refreshUser.bind(this)
     this.monitor = this.monitor.bind(this)
     this.getViewingAsUser = this.getViewingAsUser.bind(this)
+    this.becomeUser = this.becomeUser.bind(this)
   }
 
   becomeUser(email: any, accessToken: any) {

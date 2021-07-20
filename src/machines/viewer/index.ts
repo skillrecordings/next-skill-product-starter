@@ -1,5 +1,4 @@
 import {createMachine, assign} from 'xstate'
-import Auth from 'utils/auth'
 import {identify} from 'utils/analytics'
 import isEmpty from 'lodash/isEmpty'
 import isEqual from 'lodash/isEqual'
@@ -15,8 +14,6 @@ import {
   getIsUnclaimedBulkPurchaser,
   getCanViewContent,
 } from './utils'
-
-export const auth = new Auth()
 
 export const viewerMachine = createMachine<
   ViewerContext,

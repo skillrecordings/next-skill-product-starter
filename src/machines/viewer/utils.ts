@@ -4,7 +4,9 @@ import reduce from 'lodash/reduce'
 import {isBrowser} from 'utils/is-browser'
 import getDevAccessToken from 'utils/get-dev-access-token'
 import {SellableResource, Viewer} from '@types'
-import {auth} from './index'
+import Auth from 'utils/auth'
+
+export const auth = new Auth()
 
 interface GetAccessTokenArgs {
   access_token?: string
@@ -25,12 +27,6 @@ export async function fetchViewer({
 }: FetchViewerArgs): Promise<Viewer> {
   if (!isBrowser()) {
     return Promise.reject('localstorage not available')
-  }
-
-  const devAccessToken = getDevAccessToken()
-
-  if (devAccessToken) {
-    return await auth.setSession(devAccessToken)
   }
 
   if (viewAsUser && accessToken) {
