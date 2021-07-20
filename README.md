@@ -118,7 +118,7 @@ const SomeComponent = () => {
 
 We use Stripe to capture purchases. There are `TODO`s in `src/components/commerce` to adjust the code based on what kinds of packages we are selling.
 
-You will need to get a Stripe public test token to make purchases in development. This key will be set in the `NEXT_PUBLIC_STRIPE_TOKEN` env variable.
+You will need to get a Stripe public test token to make purchases in development. This key will be set in the `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` env variable.
 
 ### Commerce in local development
 

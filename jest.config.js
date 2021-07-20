@@ -17,4 +17,9 @@ module.exports = {
   moduleNameMapper: {
     '^.+\\.module\\.(css|sass|scss)$': 'identity-obj-proxy',
   },
+  // resolve absolute imports in tests
+  // https://stackoverflow.com/questions/50171412/jest-typescript-absolute-paths-baseurl-gives-error-cannot-find-module
+  roots: ['src'],
+  moduleDirectories: ['node_modules', 'src'],
+  resetMocks: true,
 }
