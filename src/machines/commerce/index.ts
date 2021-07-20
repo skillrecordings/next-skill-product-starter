@@ -58,6 +58,7 @@ const commerceMachine = createMachine<CommerceMachineContext, CommerceEvent>(
       // coupons can error on the price check so we need to set context if this is the case
       checkingPriceData: {
         always: [
+          // maybe we could clear the coupon, refetch prices, and display a coupon error
           {
             target: 'failure',
             cond: 'couponErrorIsPresent',
