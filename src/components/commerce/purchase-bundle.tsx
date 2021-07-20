@@ -138,6 +138,8 @@ const PurchaseBundle = ({
     send('SET_QUANTITY', {quantity, bulk})
   }
 
+  // these are used if we display a toggle for team plan
+  // delete if design doesnt require them
   const setTeamQuantity = ({quantity}: {quantity: number}) => {
     setQuantity({quantity, bulk: true})
   }
@@ -268,7 +270,7 @@ const PurchaseBundle = ({
           </div>
           <div className="text-sm opacity-70">yours forever</div>
         </div>
-        {isEmpty(upgradeFromSellable) && isProPackage && (
+        {isEmpty(upgradeFromSellable) && (
           <div className="flex justify-center">
             <div className="flex space-x-2 items-center">
               <label htmlFor="quantity" className="text-sm">
@@ -277,8 +279,12 @@ const PurchaseBundle = ({
               <input
                 value={state.context.quantity}
                 onChange={(event) => {
-                  const newQuantity = event.target.value
-                  setTeamQuantity({quantity: Number(newQuantity)})
+                  const newQuantity = Number(event.target.value)
+                  const isBulk = newQuantity > 1
+                  if (isBulk) {
+                    setIsPPP(false)
+                  }
+                  setQuantity({quantity: newQuantity, bulk: isBulk})
                 }}
                 className="border-gray-300 dark:border-gray-700 dark:bg-black dark:text-white"
                 name="quantity"
