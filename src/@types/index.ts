@@ -24,6 +24,7 @@ export type SellableResource = Resource & {
   price: number
   full_price: number
   site?: string
+  bulk: boolean
   available_upgrades?: AvailableUpgrade[]
 }
 
@@ -79,7 +80,7 @@ export type Viewer = {
   discord_id: string
   timezone: string
   opted_out: boolean
-  purchases: any[]
+  purchased: any[]
   accounts: StripeAccount[]
 }
 

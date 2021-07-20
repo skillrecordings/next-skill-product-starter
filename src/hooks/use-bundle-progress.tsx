@@ -2,14 +2,12 @@ import get from 'lodash/get'
 import filter from 'lodash/filter'
 import find from 'lodash/find'
 import {useLocalStorage} from 'react-use'
-import {useViewer} from 'contexts/viewer-context'
 import useSWR from 'swr'
 import axios from 'utils/axios'
 
-const fetcher = (url: string, token: string) => {
+const fetcher = (url: string) => {
   return axios.get(
     `${process.env.NEXT_PUBLIC_AUTH_DOMAIN}/api/v1/bundle/${url}/progress_v2?expand=section_resources`,
-    {headers: {Authorization: `Bearer ${token}`}},
   )
 }
 const STORAGE_KEY = 'pure-react-progress-2021'
@@ -18,12 +16,10 @@ export const resourceIsCompleted = (resource: any) =>
   get(resource, 'state', 'unviewed') === 'completed'
 
 const useBundleProgress = (bundle: any) => {
-  const {authToken} = useViewer()
-  const token = authToken
   const [progressDefault, writeStorage] = useLocalStorage(STORAGE_KEY)
 
   const url = bundle?.slug
-  const swrKey = url && token ? [url, token] : null
+  const swrKey = url ? [url] : null
   const {data}: any = useSWR(swrKey, fetcher, {
     revalidateOnMount: true,
     initialData: progressDefault,

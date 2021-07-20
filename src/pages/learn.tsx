@@ -71,14 +71,14 @@ const Learn: FunctionComponent<Props> = ({bundles}) => {
   const fullCurrentModule = find(modules, {slug: currentModule?.slug})
 
   // const bookDownloadUrl = purchasedBundle?.items[0]?.url as string | undefined
-  // const bannerProps = isEmpty(viewingAsUserEmail)
+  // const bannerProps = isEmpty(viewAsEmail)
   //   ? {
   //       text:
   //         " Welcome! Thank you so much for purchasing Pure React. I know you'll love it.",
   //       cta: 'View your Invoice',
   //       path: '/invoice',
   //     }
-  //   : {text: ` You are now viewing as ${viewingAsUserEmail}. Logout to reset.`}
+  //   : {text: ` You are now viewing as ${viewAsEmail}. Logout to reset.`}
 
   return (
     <Layout>

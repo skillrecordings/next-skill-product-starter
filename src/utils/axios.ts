@@ -10,9 +10,9 @@ axios.interceptors.request.use(
     const defaultHeaders = authToken
       ? {
           Authorization: `Bearer ${authToken}`,
-          'X-SITE-CLIENT': process.env.CLIENT_ID,
+          'X-SITE-CLIENT': process.env.NEXT_PUBLIC_CLIENT_ID,
         }
-      : {'X-SITE-CLIENT': process.env.CLIENT_ID}
+      : {'X-SITE-CLIENT': process.env.NEXT_PUBLIC_CLIENT_ID}
     const headers = {
       ...defaultHeaders,
       ...config.headers,

@@ -6,11 +6,13 @@ import cookie from 'utils/cookies'
 import * as serverCookie from 'cookie'
 import getAccessTokenFromCookie from './get-access-token-from-cookie'
 import {CIO_KEY} from '../hooks/use-cio'
+import {Viewer} from '@types'
 
 export const AUTH_DOMAIN = process.env.NEXT_PUBLIC_AUTH_DOMAIN
 const AUTH_CLIENT_ID = process.env.NEXT_PUBLIC_CLIENT_ID
 const AUTH_REDIRECT_URL = process.env.NEXT_PUBLIC_REDIRECT_URI
 
+// TODO: create unique keys for site authorization
 export const USER_KEY = 'sr_user'
 export const ACCESS_TOKEN_KEY = 'sr_sellable_access_token'
 export const EXPIRES_AT_KEY = 'sr_sellable_expires_at'
@@ -58,6 +60,7 @@ export default class Auth {
     this.refreshUser = this.refreshUser.bind(this)
     this.monitor = this.monitor.bind(this)
     this.getViewingAsUser = this.getViewingAsUser.bind(this)
+    this.becomeUser = this.becomeUser.bind(this)
   }
 
   becomeUser(email: any, accessToken: any) {
@@ -146,10 +149,13 @@ export default class Auth {
     })
   }
 
-  handleNewSession(accessToken: string, expiresInSeconds: string) {
+  handleNewSession(
+    accessToken: string,
+    expiresInSeconds: string = SIXTY_DAYS_IN_SECONDS,
+  ): Promise<Viewer> {
     return new Promise((resolve, reject) => {
       this.setSession(accessToken, expiresInSeconds).then(
-        (user: any) => {
+        (user) => {
           identify(user)
           resolve(user)
         },
@@ -161,7 +167,7 @@ export default class Auth {
     })
   }
 
-  handleAuthentication() {
+  handleAuthentication(): Promise<Viewer> {
     return new Promise((resolve, reject) => {
       if (typeof localStorage === 'undefined') {
         reject('no localstorage')
@@ -222,7 +228,7 @@ export default class Auth {
     return !expired
   }
 
-  refreshUser(minimalUser = true) {
+  refreshUser(minimalUser = true): Promise<Viewer> {
     return new Promise((resolve, reject) => {
       if (typeof localStorage === 'undefined') {
         reject('no local storage')
@@ -247,7 +253,10 @@ export default class Auth {
     })
   }
 
-  setSession(accessToken: string, expiresInSeconds: string) {
+  setSession(
+    accessToken: string,
+    expiresInSeconds: string = SIXTY_DAYS_IN_SECONDS,
+  ): Promise<Viewer> {
     return new Promise((resolve, reject) => {
       if (typeof localStorage === 'undefined') {
         reject('localStorage is not defined')
