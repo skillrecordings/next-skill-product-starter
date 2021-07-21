@@ -22,11 +22,7 @@ module.exports = withPlugins(
     withImages(),
     withMDX({
       pageExtensions: ['ts', 'tsx', 'mdx'],
-      remarkPlugins: [
-        require('remark-slug'),
-        require('remark-footnotes'),
-        require('remark-code-titles'),
-      ],
+      remarkPlugins: [require('remark-slug')],
       rehypePlugins: [require('mdx-prism')],
     }),
   ],
