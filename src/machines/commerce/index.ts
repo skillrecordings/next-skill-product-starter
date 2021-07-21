@@ -81,7 +81,7 @@ const commerceMachine = createMachine<CommerceMachineContext, CommerceEvent>(
             ],
           },
           DISMISS_COUPON: {
-            target: 'fetchingPrice',
+            target: 'checkingCoupon',
             actions: ['clearAppliedCoupon'],
           },
           SET_QUANTITY: {
