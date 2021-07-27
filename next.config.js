@@ -8,6 +8,9 @@ const IMAGE_HOST_DOMAINS = [
 ]
 
 const nextConfig = {
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
   reactStrictMode: true,
   images: {
     domains: IMAGE_HOST_DOMAINS,
