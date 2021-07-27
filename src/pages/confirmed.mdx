@@ -1,6 +1,6 @@
 export const firstName = config.openGraph.profile.firstName
 export const lastName = config.openGraph.profile.lastName
-export const productTitle = config.title
+export const productTitle = config.defaultTitle
 
 export const Message = () => (
   <>
@@ -26,7 +26,7 @@ export const Message = () => (
   {firstName}
 </div>
 
-import config from '../../config.json'
+import config from '../../config'
 import Layout from 'layouts'
 
 export default ({children}) => (

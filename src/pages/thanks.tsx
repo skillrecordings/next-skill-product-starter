@@ -1,6 +1,6 @@
 import * as React from 'react'
 import Layout from 'layouts'
-import config from '../../config.json'
+import config from '../../config'
 import get from 'lodash/get'
 import Markdown from 'react-markdown'
 import {fetchStripeCheckoutSession} from 'utils/stripe'
@@ -15,7 +15,7 @@ const ThanksPage = ({displayEmail}: any) => {
   const emailText =
     displayEmail && displayEmail !== 'undefined' ? `**${displayEmail}**` : ''
   const instructionText = `# Thank you for purchasing ${
-    config.title
+    config.defaultTitle
   }. Please check your inbox.
 ${emailText ? `## ${emailText}` : ''}
 As a final step to access the course you need

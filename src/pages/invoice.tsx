@@ -1,5 +1,5 @@
 import * as React from 'react'
-import config from '../../config.json'
+import config from '../../config'
 import {useLocalStorage} from 'react-use'
 import Image from 'next/image'
 import {format, parseISO} from 'date-fns'
@@ -74,7 +74,7 @@ const Invoice: React.FunctionComponent = () => {
               <div className="col-span-2 flex items-center">
                 <Image
                   src="/placeholder-rect.svg"
-                  alt={config.title}
+                  alt={config.defaultTitle}
                   width={50}
                   height={50}
                 />
@@ -84,7 +84,7 @@ const Invoice: React.FunctionComponent = () => {
               </div>
               <div>
                 <h5 className="uppercase text-xs mb-2 text-gray-500">From</h5>
-                {config.title} with {config.author}
+                {config.defaultTitle} with {config.author}
                 <br />
                 co egghead.io LLC
                 <br />
