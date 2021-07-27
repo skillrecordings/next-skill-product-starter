@@ -3,7 +3,7 @@ import * as React from 'react'
 const FORM_ID = '123456'
 
 type ConvertkitSubscribeFormProps = {
-  onSubmit: () => void
+  onSubmit?: () => void
 }
 
 const ConvertkitSubscribeForm: React.FC<ConvertkitSubscribeFormProps> = ({
@@ -19,7 +19,7 @@ const ConvertkitSubscribeForm: React.FC<ConvertkitSubscribeFormProps> = ({
         action={`https://app.convertkit.com/forms/${FORM_ID}/subscriptions`}
         method="post"
         className="space-y-4 w-full"
-        onSubmit={() => onSubmit()}
+        onSubmit={() => onSubmit && onSubmit()}
       >
         <div>
           <label
