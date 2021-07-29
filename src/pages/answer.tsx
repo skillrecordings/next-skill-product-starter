@@ -66,7 +66,7 @@ const Answer: React.FC<AnswerProps> = () => {
   )
 }
 
-const questions: Questions = {
+export const questions: Questions = {
   essay: {
     question: `## Lorem ipsum dolor sit amet?`,
     type: `essay`,

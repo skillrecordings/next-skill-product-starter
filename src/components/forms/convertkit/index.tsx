@@ -1,6 +1,6 @@
 import * as React from 'react'
 
-const FORM_ID = '123456'
+const FORM_ID = process.env.NEXT_PUBLIC_CONVERTKIT_SIGNUP_FORM
 
 type ConvertkitSubscribeFormProps = {
   onSubmit?: () => void
