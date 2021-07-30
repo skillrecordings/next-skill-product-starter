@@ -43,7 +43,7 @@ function useQuestion(question: Question) {
       axios
         .post('/api/answer', {
           tagId,
-          quiz: {
+          survey: {
             id: findKey(questions, question),
             answer: values.answer,
           },
