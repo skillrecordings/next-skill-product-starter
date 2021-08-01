@@ -5,6 +5,8 @@ import isEmpty from 'lodash/isEmpty'
 import type {Question} from 'pages/answer'
 import React from 'react'
 import * as Yup from 'yup'
+import findKey from 'lodash/findKey'
+import {questions} from 'pages/answer'
 
 type Choice = {
   answer: string
@@ -37,11 +39,14 @@ function useQuestion(question: Question) {
       // comment: Yup.string().nullable().required(),
     }),
     onSubmit: async (values) => {
-      // await new Promise((r) => setTimeout(r, 500))
       setSubmitting(true)
       axios
         .post('/api/answer', {
           tagId,
+          survey: {
+            id: findKey(questions, question),
+            answer: values.answer,
+          },
         })
         .then(() => {
           setAnswer(values)
